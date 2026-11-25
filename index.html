@@ -300,6 +300,7 @@ main,.card,.row,.tip,.l-form,h1,h2,h3,.sk,.tag{overflow-wrap:anywhere}
 [dir=rtl] .tabs .pill{left:auto;right:4px}[dir=rtl] .tabs.r .pill{transform:translateX(-100%)}
 [dir=rtl] .err,[dir=rtl] .field label{text-align:start}
 [dir=rtl] .btn svg,[dir=rtl] .chev{transform:scaleX(-1)}
+@media(max-width:860px){.nav{font-size:0.75rem}}
 </style>
 </head>
 <body>
@@ -336,12 +337,9 @@ main,.card,.row,.tip,.l-form,h1,h2,h3,.sk,.tag{overflow-wrap:anywhere}
   <aside aria-label="Main navigation">
     <span class="brand" aria-label="NorthStep"><svg class="mk" viewBox="16 16 210 196" aria-hidden="true"><use href="#nsmark"/></svg><span class="logo">NorthStep<i>.</i></span></span>
     <button class="nav" data-v="home"></button>
-    <button class="nav" data-v="builder"></button>
-    <button class="nav" data-v="discover"></button>
+    <button class="nav" data-v="roadmap"></button>
     <button class="nav" data-v="pivot"></button>
     <button class="nav" data-v="reports"></button>
-    <button class="nav" data-v="pay"></button>
-    <button class="nav" data-v="trust"></button>
     <button class="nav" data-v="settings"></button>
     <div class="spacer"></div><div class="asd" style="padding:0 12px 10px;display:flex;gap:10px;align-items:center"><span class="tag">Demo data</span><button class="thm" id="thm" type="button"></button></div>
     <div class="me"><div class="av" id="av" aria-hidden="true"></div><div style="flex:1;min-width:0"><b id="mn" dir="auto"></b><small id="me" dir="auto"></small></div>
@@ -418,8 +416,8 @@ const setScope=u=>{SCOPE=u&&u.guest?'g':(u&&u.email?'u'+h8(u.email):'')};
 const ICON={sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/>',moon:'<path d="M20 14a8 8 0 1 1-10-10 6.5 6.5 0 0 0 10 10z"/>',swap:'<path d="M4 8h13l-3-3M20 16H7l3 3"/>',card:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/>',shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',home:'<path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',route:'<circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h8a3 3 0 0 0 0-6H8a3 3 0 0 1 0-6h8"/>',compass:'<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',file:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',chev:'<path d="M6 9l6 6 6-6"/>',
 check:'<path d="M5 12l5 5 9-10"/>',lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M18.5 16v4M16.5 18h4"/>',book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5V21h16v-4M9 7h7"/>',devices:'<rect x="2.5" y="5" width="13" height="10" rx="2"/><rect x="18" y="9" width="3.5" height="10" rx="1.5"/><path d="M6 19h6"/>',chart:'<path d="M3 20h18M6 20v-8M12 20V5M18 20v-5"/>',tag:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.2"/>',receipt:'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',print:'<path d="M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="7" y="14" width="10" height="7"/>',external:'<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'};
 const svg=(n,c='')=>`<svg aria-hidden="true" class="${c}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[n]}</svg>`;
-const NAV=[['home','Today','home'],['builder','Roadmap','route'],['discover','Niche finder','compass'],['pivot','Pivot','swap'],['reports','Reports','file'],['pay','Pre-pay','card'],['trust','Trust','shield'],['settings','Settings','gear']];
-$$('.nav').forEach((b,i)=>b.innerHTML=svg(NAV[i][2])+`<span>${NAV[i][1]}</span>`);
+const NAV={home:['Today','home'],roadmap:['Roadmap','route'],pivot:['Pivot','swap'],reports:['Reports','file'],settings:['Settings','gear']};
+$$('.nav').forEach(b=>{const n=NAV[b.dataset.v];if(n)b.innerHTML=svg(n[1])+`<span>${n[0]}</span>`});
 
 /* ================= Theme ================= */
 const PRESETS={
@@ -610,14 +608,16 @@ const fmt=ts=>new Date(ts).toLocaleDateString(undefined,{day:'numeric',month:'sh
 const levelTag=(s,t)=>`<span class="tag">${lvl(s,t)}</span>`;
 function setProg(el,pct,label){if(!el)return;el.setAttribute('role','progressbar');el.setAttribute('aria-label',label);el.setAttribute('aria-valuemin','0');el.setAttribute('aria-valuemax','100');el.setAttribute('aria-valuenow',String(pct))}
 const VIEWS={};let state={view:'',param:null};
-function setNav(){$$('.nav').forEach(b=>{const on=b.dataset.v===(state.view==='report'?'reports':state.view);b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')})}
-function parseRoute(){let h='';try{h=decodeURIComponent((location.hash||'').slice(1)).slice(0,40)}catch(e){return null}const m=h.match(/^([a-z]+)(?:\/([a-z0-9]{1,12}))?$/);if(!m||!own(VIEWS,m[1]))return null;if(m[1]==='report')return m[2]?{v:'report',p:m[2]}:null;return {v:m[1],p:null}}
+const NAVOF={report:'reports',builder:'roadmap',discover:'roadmap',pay:'home',trust:'settings'};
+function setNav(){$$('.nav').forEach(b=>{const on=b.dataset.v===(NAVOF[state.view]||state.view);b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')})}
+function parseRoute(){let h='';try{h=decodeURIComponent((location.hash||'').slice(1)).slice(0,40)}catch(e){return null}const m=h.match(/^([a-z]+)(?:\/([a-z0-9]{1,12}))?$/);if(!m||!own(VIEWS,m[1]))return null;if(m[1]==='report')return m[2]?{v:'report',p:m[2]}:null;if(m[1]==='roadmap')return {v:'roadmap',p:m[2]||null};return {v:m[1],p:null}}
+let prevV=null;
 function go(v,p,h){
  if(!own(VIEWS,v))v='home';
  const swap=()=>{if(!LS.get('user'))return;
-  if(h!=='pop'){const hash='#'+v+(v==='report'&&typeof p==='string'?'/'+p:'');let sp=null;try{sp=JSON.parse(JSON.stringify(p==null?null:p))}catch(e){}
+  if(h!=='pop'){const hash='#'+v+((v==='report'||v==='roadmap')&&typeof p==='string'?'/'+p:'');let sp=null;try{sp=JSON.parse(JSON.stringify(p==null?null:p))}catch(e){}
    try{(h==='replace'||(state.view===v&&state.param===p&&location.hash===hash)?history.replaceState:history.pushState).call(history,{v,p:sp},'',hash)}catch(e){}}
-  state.view=v;state.param=p;main.innerHTML='';VIEWS[v](main,p);main.classList.remove('out');reveal(main);setNav();main.scrollTop=0};
+  if(state.view!==v||state.param!==p)prevV={v:state.view,p:state.param};state.view=v;state.param=p;main.innerHTML='';VIEWS[v](main,p);main.classList.remove('out');reveal(main);setNav();main.scrollTop=0};
  if(!main.innerHTML.trim()){swap();return}
  main.classList.add('out');setTimeout(swap,210);
 }
@@ -727,7 +727,7 @@ function finishBuilder(){
  const stage=$('.stage');analyse(stage,['Weighing education alignment…','Comparing interests with the field…','Checking time against what’s needed…','Calculating fit…'],()=>{
   LS.del('draft_b');if(!B.pre.profile)LS.set('profile',{...LS.get('profile',{}),...profOf(B.a)});
   const r=compute(B.a),rep={id:uid(),type:'roadmap',created:Date.now(),title:`${DOMAINS[B.a.domain].name} roadmap${B.a.pivot?' (pivot)':''}`,score:r.score,a:{...B.a},done:{}};
-  const all=reports();all.unshift(rep);saveReports(all);go('report',rep.id)});
+  const all=reports();all.unshift(rep);saveReports(all);go('roadmap',rep.id)});
 }
 
 /* ================= Niche finder ================= */
@@ -785,7 +785,7 @@ function roadmapReport(m,rep){
   <span class="tag">${r.level} · indicative range ${lo}–${hi}%</span> <span class="tag n" style="margin-left:4px">Preview, not yet calibrated</span>
   <h1>${esc(a.name||'Your')}${a.name?'’s':''} path into ${D.name}</h1>
   <p class="muted">Focus: ${tr[0]} · ${a.hours||8} h/week · target: ${a.goal}. At this pace you could finish the roadmap around <b style="color:var(--text)">${target}</b> (~${r.weeks} weeks).${(a.hours||8)<r.need*.9?` That is later than your ${a.goal} target. About <b style="color:var(--text)">${Math.ceil(r.need)} h/week</b> would hit it.`:''}</p>
-  <div class="tip" style="margin-top:14px;margin-bottom:0"><b>What this number means</b>The fit indicator shows how well this path matches your answers and constraints. It is not a prediction of whether you will get a job or what you will earn.</div>
+  <div class="tip" style="margin-top:14px;margin-bottom:0"><b>What this number means</b>The fit indicator shows how well this path matches your answers and constraints. It is not a prediction of whether you will get a job or what you will earn.<div style="margin-top:6px"><button class="link" data-trust type="button">How NorthStep stays honest</button></div></div>
   <div class="noprint" style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="pr">Save as PDF</button><button class="btn ghost" id="rt">Retake</button></div></div></div></div>
  <div class="grid g2" style="margin-top:18px">
   <div class="card rise"><h3>Why this score</h3><small>Each factor (0–100%) × its weight</small><div style="margin-top:8px">${factorRows(r.f)}</div></div>
@@ -842,6 +842,7 @@ VIEWS.settings=m=>{
   <div class="sline" style="margin-top:10px"><div><b>Corner radius</b><br><small>Softer or sharper cards</small></div><input type="range" id="rad" aria-label="Corner radius" min="4" max="28" value="${theme.radius}" style="width:180px"></div>
   <div class="sline" style="border-top:1px solid var(--line)"><div><b>Text size</b><br><small>Also follows your device’s text size setting</small></div><div class="seg" id="tsz" style="margin:0">${[['Default',1],['Large',1.15],['Larger',1.3]].map(([l,v])=>`<button type="button" data-ts="${v}" class="${theme.ts===v?'on':''}" aria-pressed="${theme.ts===v}">${l}</button>`).join('')}</div></div>
   <div class="sline" style="border-top:1px solid var(--line)"><div><b id="calm-l">Calm mode</b><br><small>Turn off animations and transitions</small></div><button class="tg ${theme.calm?'on':''}" id="calm" type="button" role="switch" aria-checked="${!!theme.calm}" aria-labelledby="calm-l"></button></div></div>
+ <div class="card rise" style="margin-top:18px"><h3>About NorthStep</h3><div class="sline"><div><b>How NorthStep stays honest</b><br><small>What the numbers mean, what is still a stand-in, and what is coming.</small></div><button class="btn ghost" id="stt" type="button">Read</button></div><div class="sline" style="border-top:1px solid var(--line)"><div><b>Pre-pay for early access</b><br><small>Hold your place in the closed beta.</small></div><button class="btn ghost" id="stp" type="button">Open</button></div></div>
  <div class="card rise" style="margin-top:18px"><h3>Account</h3><div class="sline"><div><b dir="auto">${esc(user.name)}</b><br><small dir="auto">${esc(user.email)}</small></div><button class="btn ghost" id="so">Sign out</button></div>
   <p style="margin-top:2px"><small>Create an account to sync across devices (coming soon).</small></p>
   <div class="sline" style="border-top:1px solid var(--line);margin-top:10px"><div><b>Reset demo data</b><br><small>Restore the sample reports</small></div><button class="btn ghost" id="rs">Reset</button></div>
@@ -853,7 +854,7 @@ VIEWS.settings=m=>{
  $('#rad').oninput=e=>{theme.radius=+e.target.value;applyTheme()};
  $('#calm').onclick=e=>{theme.calm=!theme.calm;e.currentTarget.classList.toggle('on',theme.calm);e.currentTarget.setAttribute('aria-checked',String(theme.calm));applyTheme()};
  $$('#tsz button',m).forEach(b=>b.onclick=()=>{theme.ts=+b.dataset.ts;applyTheme();$$('#tsz button',m).forEach(x=>{const on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-pressed',String(on))})});
- $('#so').onclick=()=>logout();$('#rs').onclick=()=>{LS.del('reports');go('settings')};
+ $('#so').onclick=()=>logout();$('#stt').onclick=()=>go('trust');$('#stp').onclick=()=>go('pay');$('#rs').onclick=()=>{LS.del('reports');go('settings')};
  $('#dz').onclick=()=>{$('#dzp').hidden=false;$('#dzi').focus()};$('#dzc').onclick=()=>{$('#dzp').hidden=true;$('#dzi').value='';$('#dzg').disabled=true};
  $('#dzi').oninput=e=>{$('#dzg').disabled=e.target.value.trim().toUpperCase()!=='DELETE'};$('#dzg').onclick=()=>{if(!$('#dzg').disabled)wipeMine()};
 };
@@ -992,12 +993,12 @@ VIEWS.builder=(m,pre)=>{
  ${dr?`<div class="tip"><b>You left a roadmap unfinished</b>Pick up where you stopped, or start fresh.<div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button class="btn" id="rsm">Resume</button><button class="link" id="rsx" type="button">Start over</button></div></div>`:''}
  ${B.prof?`<div class="tip"><b>Saved details we’ll reuse</b>${reused}<div style="margin-top:8px"><button class="link" id="ed" type="button">Change saved details</button></div></div>`:''}
  ${!B.prof&&!pr.from?`<div class="grid g3">${st.map((x,i)=>`<div class="tip" style="margin:0"><b style="display:block">${i+1}. ${x[0]}</b>${x[1]}</div>`).join('')}</div>`:''}
- ${!pr.domain?`<div class="sec" style="margin:24px 0 10px">Already know your field? Start there</div><div class="chips">${DK.map(k=>`<button class="chip ${B.a.domain===k?'sel':''}" data-pre="${k}" aria-pressed="${B.a.domain===k}">${DOMAINS[k].name}</button>`).join('')}</div>`:''}
+ ${!pr.domain?`<div class="sec" style="margin:24px 0 10px">Already know your field? Start there</div><div class="chips">${DK.map(k=>`<button class="chip ${B.a.domain===k?'sel':''}" data-pre="${k}" aria-pressed="${B.a.domain===k}">${DOMAINS[k].name}</button>`).join('')}</div><p class="muted" style="margin-top:12px;font-size:0.8438rem">Not sure of your field? <button class="link" id="tfn" type="button">Try the niche finder</button></p>`:''}
  <p class="muted" style="margin:18px 0;font-size:0.8438rem">You’ll get a phased roadmap, resources matched to your budget, a fit range with its factor breakdown, and a report you can print.</p>
  <button class="btn" id="st">${B.prof||pr.from?'Generate my roadmap':'Start'} ${svg('arrow','')}</button></div></div></div>`;
  $$('[data-pre]',m).forEach(b=>b.onclick=()=>{B.a.domain=b.dataset.pre;delete B.a.track;delete B.a.dq1;delete B.a.dq2;$$('[data-pre]',m).forEach(x=>{x.classList.toggle('sel',x===b);x.setAttribute('aria-pressed',String(x===b))})});
  const go2=()=>{m.innerHTML=`<div class="wrap"><div class="stage"><div class="prog"><span id="bs"></span><span id="bp"></span></div><div class="bar"><i id="bf"></i></div><div id="qc"></div></div></div>`;B.cur=(visQ()[0]||{id:'name'}).id;drawQ(1)};
- $('#st').onclick=go2;
+ $('#st').onclick=go2;const tfn=$('#tfn');if(tfn)tfn.onclick=()=>go('discover');
  const rsm=$('#rsm');if(rsm){rsm.onclick=()=>{const d=getDraft();if(!d)return;B=buildB(d.pre);B.a=Object.assign(B.a,d.a);const v=visQ();B.cur=v.some(q=>q.id===d.cur)?d.cur:v[0].id;m.innerHTML=`<div class="wrap"><div class="stage"><div class="prog"><span id="bs"></span><span id="bp"></span></div><div class="bar"><i id="bf"></i></div><div id="qc"></div></div></div>`;drawQ(1)};
   $('#rsx').onclick=()=>{LS.del('draft_b');VIEWS.builder(m,pre);reveal(m)}}
  const ed=$('#ed');if(ed)ed.onclick=()=>{KEEP.forEach(k=>B.skip.delete(k));B.prof=false;go2()};
@@ -1027,36 +1028,39 @@ function finishN(){
 }
 /* ================= v4: Today ================= */
 function nextStep(rep){const ph=buildPhases(rep.a,compute(rep.a));for(let i=0;i<ph.length;i++)for(let j=0;j<ph[i].s.length;j++)if(!(rep.done||{})[i+'-'+j])return{i,j,ph:ph[i],txt:ph[i].s[j],n:ph.length};return null}
-const FT=['Adaptive AI questions','Grounded resources','Sync across devices','Calibrated fit','Course discounts','Payments and invoices'];
-function featPanel(k,rep){
- const ph=rep?buildPhases(rep.a,compute(rep.a)):null,res=(ph&&ph[0].r||['CS50','freeCodeCamp']).map(String),paid=cleanPay(LS.get('pay',null)),sync=LS.get('sync',false),off=LS.get('offers',false);
- return [
- `<span class="tag n">In design</span><p class="muted" style="margin:10px 0">A model will pick your next question from your earlier answers and your progress. Try the preview.</p><div class="seg" data-ad>${['Finished a course','Stuck on a topic','Lost momentum'].map((x,i)=>`<button data-i="${i}">${x}</button>`).join('')}</div><div class="tip" id="adq" style="margin:0">Choose how your week went to see the question you’d get.</div>`,
- `<span class="tag n">Built, not yet integrated</span><p class="muted" style="margin:10px 0">Every suggestion will point to a checked source. Here is how it will look for your first phase.</p>${res.map(x=>`<div class="row"><div class="ck">${svg('book')}</div><div class="grow"><b>${esc(x)}</b><br><small>Matched to your budget · source checked 3 Nov 2026 (demo)</small><details><summary>Show source</summary><small>Catalogue entry and syllabus page, matched to phase 1 of your roadmap.</small></details></div></div>`).join('')}`,
- `<span class="tag n">Planned</span><p class="muted" style="margin:10px 0">Pick up your roadmap on any device. Link a phone to preview.</p><div class="row"><div class="grow"><b>This browser</b><br><small>Synced just now</small></div><span class="tag">Active</span></div><div class="row"><div class="grow"><b>Phone</b><br><small>${sync?'Linked · synced 2 minutes ago':'Not linked'}</small></div><button class="btn ghost" data-sync>${sync?'Unlink':'Link a device'}</button></div>`,
- `<span class="tag n">Needs real data</span><p class="muted" style="margin:10px 0">Predicted fit compared with what happened, in five groups. When the bars match, the label “Preview, not yet calibrated” can go.</p><div class="rel" aria-hidden="true">${[[30,28],[45,50],[60,55],[75,78],[90,82]].map(x=>`<div><i style="height:${x[0]}%"></i><i style="height:${x[1]}%"></i></div>`).join('')}</div><small>Accent: predicted · grey: observed · demo values</small>
- <div class="grid g3 k3" style="margin-top:14px"><div class="stat"><b>0.21</b><small>Brier score (demo)</small></div><div class="stat"><b>0.07</b><small>Calibration error (demo)</small></div><div class="stat"><b>84/100</b><small>Tests passed. The bar is 92</small></div></div>`,
- `<span class="tag n">On hold</span><p class="muted" style="margin:10px 0">Partner discounts may come later. They will be labelled, and they will never change the order of your roadmap.</p><button class="btn ghost" data-offers>${off?'Hide partner offers':'Preview partner offers'}</button>${off?`<div class="row" style="margin-top:10px"><div class="grow"><b>Intro course, example partner</b><br><small>Partner price · disclosed</small></div><s class="muted">$45</s><b>$35</b></div>`:''}`,
- `<span class="tag n">Planned</span><p class="muted" style="margin:10px 0">Real payments with receipts and invoices once a provider is chosen.</p>${paid?`<div class="row"><div class="grow"><b>${esc(paid.id)}</b><br><small>Pre-pay · ${fmt(paid.at)}</small></div><span class="tag">${PSTAT[paid.status]||'Recorded'}</span></div>`:'<p class="muted">No pre-pay recorded yet.</p>'}<button class="btn ghost" data-go="pay">${paid?'View status':'Open pre-pay'}</button>`][k];
-}
 VIEWS.home=m=>{
  const rm=reports().filter(r=>r.type==='roadmap'),rep=rm[0],user=me(),days=getDays(),h=new Date().getHours(),g=h<12?'Good morning':h<18?'Good afternoon':'Good evening';
  const ns=rep&&nextStep(rep),prog=rep?progressOf(rep):0,r=rep&&compute(rep.a),mg=r&&r.margin!=null?r.margin:10,lo=rep?Math.max(0,rep.score-mg):0,hi=rep?Math.min(100,rep.score+mg):0;
+ const paid=cleanPay(LS.get('pay',null)),hid=+LS.get('payHide',0)||0,showPay=!paid&&Date.now()-hid>7*864e5;
+ const payBar=paid?`<div class="card rise" style="padding:14px 20px;margin-bottom:18px"><div class="rrow"><span class="tag">Closed beta</span><span class="grow">Pre-pay: <b>${PSTAT[paid.status]||'Recorded'}</b> · ${esc(paid.id)}</span><button class="link" data-go="pay" type="button">View</button></div></div>`
+  :showPay?`<div class="card rise" style="padding:16px 20px;margin-bottom:18px;background:var(--soft)"><div class="rrow"><span class="tag">Closed beta</span><div class="grow"><b>Hold your place for $${CFG.price}</b><br><small>Pre-pay to help decide what we build first. Credited toward your first full roadmap.</small></div><button class="btn" data-go="pay" type="button">Reserve my spot</button><button class="link" id="phx" type="button">Not now</button></div></div>`:'';
  m.innerHTML=`<div class="wrap"><div class="head rise"><h1>${g}, ${esc(user.name.split(' ')[0])}.</h1><p>${rep?`You’re ${prog}% through ${DOMAINS[rep.a.domain].name}.`:'Start with a roadmap or the niche finder.'} <span class="tag">Demo data</span></p></div>
- <div class="grid g21"><div class="card rise">${ns?`<small>Your next step · ${esc(ns.ph.t)} (phase ${ns.i+1} of ${ns.n})</small><h2 style="margin:8px 0 18px;font-size:1.5rem">${esc(ns.txt)}</h2><button class="btn" id="nd">Mark done</button> <button class="btn ghost" data-go="builder">New roadmap</button>`:rep?'<h2>Every step is done.</h2><p class="muted" style="margin:8px 0 16px">Re-check your fit or try a pivot.</p><button class="btn" data-go="pivot">Explore a pivot</button>':'<h2>No roadmap yet.</h2><p class="muted" style="margin:8px 0 16px">Answer a few questions and we’ll plan your first phase.</p><button class="btn" data-go="builder">Build a roadmap</button>'}</div>
+ ${payBar}
+ <div class="grid g21"><div class="card rise">${ns?`<small>Your next step · ${esc(ns.ph.t)} (phase ${ns.i+1} of ${ns.n})</small><h2 style="margin:8px 0 18px;font-size:1.5rem">${esc(ns.txt)}</h2><button class="btn" id="nd">Mark done</button> <button class="btn ghost" data-go="roadmap">View roadmap</button>`:rep?'<h2>Every step is done.</h2><p class="muted" style="margin:8px 0 16px">Re-check your fit or try a pivot.</p><button class="btn" data-go="pivot">Explore a pivot</button>':'<h2>No roadmap yet.</h2><p class="muted" style="margin:8px 0 16px">Answer a few questions and we’ll plan your first phase.</p><button class="btn" data-go="builder">Build a roadmap</button>'}</div>
  <div class="card rise" style="text-align:center">${rep?gaugeHTML(prog,130,'Progress '+prog+' percent'):''}<small style="display:block;margin-top:8px">Overall progress</small></div></div>
+ <div class="card lift rise" data-go="pivot" role="button" tabindex="0" style="margin-top:18px"><div class="rrow"><div class="ico" style="margin:0">${svg('swap')}</div><div class="grow"><h3 style="margin:0 0 2px">Changing direction?</h3><p class="muted">Pivot maps what you’ve already learned onto a new path, so none of that time is wasted.</p></div><span class="btn ghost">See what carries over ${svg('arrow')}</span></div></div>
  <div class="grid g2" style="margin-top:18px"><div class="card rise"><h3>This week</h3><p class="muted" id="dc" style="margin-bottom:12px">${days.filter(Boolean).length} of 5 practice days</p><div class="days">${['M','T','W','T','F','S','S'].map((d,i)=>`<button data-d="${i}" aria-pressed="${!!days[i]}" class="${days[i]?'on':''}">${d}</button>`).join('')}</div></div>
- <div class="card rise"><h3>Fit indicator</h3>${rep?`<div class="bar" style="margin:14px 0 8px;position:relative"><i style="position:absolute;left:${lo}%;width:${hi-lo}%"></i></div><b>Indicative range ${lo} to ${hi}</b><p style="margin-top:6px"><span class="tag n">Preview, not yet calibrated</span></p>`:'<p class="muted">Appears after your first roadmap.</p>'}</div></div>
- <div class="grid g3" style="margin-top:18px">${[['pivot','swap','Pivot','See what carries over'],['discover','compass','Niche finder','Check your result clarity'],['reports','file','Reports','Print or copy a summary']].map(x=>`<div class="card lift rise" data-go="${x[0]}" role="button" tabindex="0"><div class="ico">${svg(x[1])}</div><h3>${x[2]}</h3><p class="muted">${x[3]}</p></div>`).join('')}</div>
- <div class="sec">Coming to your dashboard</div><div class="card rise"><div class="seg" role="tablist" id="ft">${FT.map((x,i)=>`<button role="tab" data-t="${i}">${x}</button>`).join('')}</div><div id="fp" aria-live="polite"></div></div></div>`;
+ <div class="card rise"><h3>Fit indicator</h3>${rep?`<div class="bar" style="margin:14px 0 8px;position:relative"><i style="position:absolute;left:${lo}%;width:${hi-lo}%"></i></div><b>Indicative range ${lo} to ${hi}</b><p style="margin-top:6px"><span class="tag n">Preview, not yet calibrated</span></p><p style="margin-top:8px"><button class="link" data-go="trust" type="button">What does this mean?</button></p>`:'<p class="muted">Appears after your first roadmap.</p>'}</div></div>
+ <div class="grid g2" style="margin-top:18px">${[['discover','compass','Niche finder','Not sure of your field? Check your result clarity'],['reports','file','Reports','Print or copy a summary']].map(x=>`<div class="card lift rise" data-go="${x[0]}" role="button" tabindex="0"><div class="ico">${svg(x[1])}</div><h3>${x[2]}</h3><p class="muted">${x[3]}</p></div>`).join('')}</div></div>`;
  $$('[data-go]',m).forEach(e=>e.onclick=()=>go(e.dataset.go));
+ const px=$('#phx');if(px)px.onclick=()=>{LS.set('payHide',Date.now());go('home',null,'replace')};
  const nd=$('#nd');if(nd)nd.onclick=()=>{rep.done=rep.done||{};rep.done[ns.i+'-'+ns.j]=1;saveReports(reports().map(x=>x.id===rep.id?rep:x));go('home')};
  $$('[data-d]',m).forEach(b=>b.onclick=()=>{const i=+b.dataset.d;days[i]=days[i]?0:1;setDays(days);b.classList.toggle('on',!!days[i]);b.setAttribute('aria-pressed',String(!!days[i]));$('#dc').textContent=`${days.filter(Boolean).length} of 5 practice days`});
- const tab=k=>{$$('#ft button').forEach(b=>{const on=+b.dataset.t===k;b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on))});const fp=$('#fp');fp.innerHTML=featPanel(k,rep);
-  $$('[data-ad] button',fp).forEach(b=>b.onclick=()=>{$$('[data-ad] button',fp).forEach(x=>x.classList.toggle('on',x===b));$('#adq').textContent=['Great. Which project could show this skill to others? Pick one and we’ll add it to phase 3.','Which part felt unclear? Choose one and we’ll find a shorter explanation and a smaller step.','What got in the way this week: time, money or energy? We’ll lighten next week’s plan.'][b.dataset.i]});
-  const sy=$('[data-sync]',fp);if(sy)sy.onclick=()=>{LS.set('sync',!LS.get('sync',false));tab(k)};const of=$('[data-offers]',fp);if(of)of.onclick=()=>{LS.set('offers',!LS.get('offers',false));tab(k)};
-  const gp=$('[data-go]',fp);if(gp)gp.onclick=()=>go('pay')};
- $$('#ft button').forEach(b=>b.onclick=()=>tab(+b.dataset.t));tab(0);
+};
+/* ================= Roadmap tab: your current plan; new ones start from here ================= */
+VIEWS.roadmap=(m,id)=>{
+ const rms=reports().filter(r=>r.type==='roadmap');
+ if(!rms.length){
+  m.innerHTML=`<div class="wrap" style="max-width:860px"><div class="head rise"><h1>Roadmap</h1><p>Your plan lives here once you have one.</p></div><div class="grid g2"><div class="card lift rise" data-go="builder" role="button" tabindex="0"><div class="ico">${svg('route')}</div><h3>I know my field</h3><p class="muted">Answer a few questions and get a phased plan with a fit range.</p></div><div class="card lift rise" data-go="discover" role="button" tabindex="0"><div class="ico">${svg('compass')}</div><h3>I’m not sure yet</h3><p class="muted">Eight short scenarios show which field stands out for you.</p></div></div></div>`;
+  $$('[data-go]',m).forEach(e=>e.onclick=()=>go(e.dataset.go));return}
+ const cur=rms.find(r=>r.id===id)||rms[0];
+ VIEWS.report(m,cur.id);
+ const w=$('.wrap',m);if(!w)return;
+ const old=$('#bk',m);if(old&&old.parentElement)old.parentElement.remove();
+ const sel=rms.length>1?`<select class="input" id="rsel" aria-label="Choose roadmap" style="width:auto;max-width:100%">${rms.map(r=>`<option value="${r.id}" ${r.id===cur.id?'selected':''}>${esc(r.title)} · ${fmt(r.created)}</option>`).join('')}</select>`:'';
+ w.insertAdjacentHTML('afterbegin',`<div class="noprint rise" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px">${sel}<span style="flex:1"></span><button class="btn ghost" id="rnew" type="button">${svg('route')} New roadmap</button><button class="btn ghost" id="rnf" type="button">${svg('compass')} Find my niche</button></div>`);
+ const rs=$('#rsel',m);if(rs)rs.onchange=e=>go('roadmap',e.target.value);
+ $('#rnew',m).onclick=()=>go('builder');$('#rnf',m).onclick=()=>go('discover');
 };
 /* ================= v4: Pre-pay test ================= */
 /* Set payLink to a Stripe/Razorpay/PayPal payment link to take real $5 pre-payments.
@@ -1117,6 +1121,10 @@ VIEWS.trust=m=>{
  <div class="sec">Neutrality and privacy</div><div class="card rise"><div class="row"><span class="grow">Resources are matched to your budget, never to commission</span></div><div class="row"><span class="grow">For ages 16 and over</span></div><div class="row"><span class="grow">In this prototype your data stays in your browser</span></div><div class="row"><span class="grow">Anything tagged Demo data is a stand-in</span></div></div>
  <div class="sec">What’s coming</div><div class="card rise">${roadmap.map(x=>`<div class="row"><div class="grow"><b>${x[0]}</b><br><small>${x[1]} · Today: ${x[2]}</small></div><span class="tag n">${x[3]}</span></div>`).join('')}</div></div>`;
 };
+/* Pre-pay and Trust are reached from Today, Settings and the fit indicator, so they get a Back link */
+function backBar(m,def){const w=$('.wrap',m);if(!w)return;const p=prevV&&prevV.v&&prevV.v!=='pay'&&prevV.v!=='trust'?prevV:def;
+ w.insertAdjacentHTML('afterbegin','<div class="noprint" style="margin-bottom:14px"><button class="link" id="bkx" type="button">← Back</button></div>');$('#bkx',m).onclick=()=>go(p.v,p.p)}
+{const _p=VIEWS.pay,_t=VIEWS.trust;VIEWS.pay=(m,x)=>{_p(m,x);backBar(m,{v:'home',p:null})};VIEWS.trust=(m,x)=>{_t(m,x);backBar(m,{v:'settings',p:null})}}
 /* ================= v4: Reports ================= */
 let RF='all';
 const summary=r=>r.type==='roadmap'?`${r.title}: fit indicator around ${r.score} (preview, not yet calibrated), ${progressOf(r)}% complete.`:`${r.title}: result clarity ${r.score}%.`;
@@ -1132,7 +1140,7 @@ VIEWS.reports=m=>{
  $$('#rf button').forEach(b=>b.onclick=()=>{RF=b.dataset.f;VIEWS.reports(m);reveal(m)});
 };
 const _rv=VIEWS.report;
-VIEWS.report=(m,id)=>{_rv(m,id);const rep=reports().find(r=>r.id===id),w=$('.wrap',m);if(!w)return;if(!rep){w.insertAdjacentHTML('afterbegin','<div class="tip" role="status"><b>We couldn’t find that report</b>It may have been deleted, or it was saved on another device.</div>');return}const a=rep.a||{},dq=[...(a.dq1||[]),a.dq2].filter(Boolean);
+VIEWS.report=(m,id)=>{_rv(m,id);const rep=reports().find(r=>r.id===id),w=$('.wrap',m);$$('[data-trust]',m).forEach(b=>b.onclick=()=>go('trust'));if(!w)return;if(!rep){w.insertAdjacentHTML('afterbegin','<div class="tip" role="status"><b>We couldn’t find that report</b>It may have been deleted, or it was saved on another device.</div>');return}const a=rep.a||{},dq=[...(a.dq1||[]),a.dq2].filter(Boolean);
  w.insertAdjacentHTML('beforeend',`<div class="card rise noprint" style="margin-top:18px"><h3>Take this with you</h3><div style="margin-top:12px"><button class="btn" id="rp">${svg('print')} Print or save as PDF</button> <button class="btn ghost" id="rc">${svg('copy')} Copy summary</button> <button class="btn ghost" disabled>Share link · coming soon</button></div></div>${dq.length?`<div class="card rise" style="margin-top:18px"><h3>Your field-specific answers</h3><p style="margin-top:8px">${dq.map(x=>`<span class="sk c">${esc(x)}</span>`).join('')}</p></div>`:''}`);
  $('#rp').onclick=()=>window.print();$('#rc').onclick=e=>{const b=e.currentTarget,h=b.innerHTML;copyTxt(summary(rep)).then(ok=>{b.textContent=ok?'Copied':'Unavailable';setTimeout(()=>b.innerHTML=h,1800)})}};
 
