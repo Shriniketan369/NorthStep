@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src https:; base-uri 'none'; form-action 'none'; frame-src 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src https:; base-uri 'none'; form-action 'none'; frame-src 'none'; object-src 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#f6f5f2">
@@ -323,11 +323,17 @@ main,.card,.row,.tip,.l-form,h1,h2,h3,.sk,.tag{overflow-wrap:anywhere}
       <div class="field" id="nf" style="display:none"><label for="ln">Name</label><input class="input" id="ln" placeholder="Your name" maxlength="40" dir="auto" autocomplete="name"></div>
       <div class="field"><label for="le">Email</label><input class="input" id="le" type="email" placeholder="you@example.com" maxlength="254" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false"></div>
       <div class="field"><label for="lp">Password</label><div class="pwrow"><input class="input" id="lp" type="password" placeholder="••••••••" maxlength="128" autocomplete="current-password"><button type="button" class="link" id="pwt" aria-pressed="false">Show</button></div></div>
-      <label class="agel"><input type="checkbox" id="age"> I’m 16 or older</label><div class="err" id="lerr" role="alert"></div>
+      <div id="sf" style="display:none">
+        <div class="field"><label for="lc">Country</label><select class="input" id="lc"><option value="">Choose…</option><option value="India">India</option><option value="US">United States</option><option value="Other">Somewhere else</option></select></div>
+        <div class="field"><label for="la">Age group</label><select class="input" id="la"><option value="">Choose…</option><option value="16-17">16 to 17</option><option value="18-22">18 to 22</option><option value="23-29">23 to 29</option><option value="30-39">30 to 39</option><option value="40+">40 or older</option></select></div>
+      </div>
+      <label class="agel"><input type="checkbox" id="age"> I’m 16 or older</label>
+      <!-- DRAFT consent text: must be reviewed by a lawyer before the closed beta (DPDP Act, under-18s, hidden-score test). Change CONSENT_V when the wording changes. -->
+      <label class="agel" id="consw" style="display:none;align-items:flex-start"><input type="checkbox" id="cons" style="margin-top:2px"><span>I agree that NorthStep saves my answers and progress to improve the product. In this closed beta, some people see their fit score only after a 21-day check-in, as part of a test.</span></label>
+      <div class="err" id="lerr" role="alert"></div><div id="lok" role="status" style="color:var(--ink-accent);font-size:0.8125rem;margin-top:6px"></div>
       <button class="btn block" id="lbtn" style="margin-top:6px"><span>Sign in</span></button>
       <button type="button" class="btn ghost block" id="guest" style="margin-top:12px">Continue as guest</button>
-      <p class="muted" style="text-align:center;font-size:0.7812rem;margin-top:8px">Try it first. Your reports stay on this device.</p>
-      <p style="text-align:center;margin-top:14px"><button type="button" class="link" id="demo">Use demo account</button></p>
+      <p class="muted" style="text-align:center;font-size:0.7812rem;margin-top:8px">Try it first. Guest reports stay on this device and are not saved to the cloud.</p>
     </form>
   </div>
 </div>
@@ -348,6 +354,7 @@ main,.card,.row,.tip,.l-form,h1,h2,h3,.sk,.tag{overflow-wrap:anywhere}
   <main id="main"></main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" integrity="sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonKOpShMH1x6nk9o" crossorigin="anonymous"></script>
 <script>
 /* ================= Storage (falls back to memory if blocked) ================= */
 const mem={};let SCOPE='';const GLOBAL=['user','accounts','lock','theme','outbox'];const K=k=>'pb_'+(GLOBAL.includes(k)?'':SCOPE+'_')+k;
@@ -399,7 +406,7 @@ function cleanRep(r){if(!r||typeof r!=='object'||Array.isArray(r))return null;
  const created=num(r.created,0,Date.now()+864e5,Date.now());
  if(r.type==='roadmap'){const a=cleanA(r.a);if(!a.domain||a.domain==='unsure')return null;
   const done={};if(r.done&&typeof r.done==='object')Object.keys(r.done).forEach(k=>{if(/^\d-\d{1,2}$/.test(k)&&r.done[k])done[k]=1});
-  return {id,type:'roadmap',created,title:cleanText(r.title,120)||(DOMAINS[a.domain].name+' roadmap'),a,done,score:compute(a).score}}
+  return {id,type:'roadmap',created,title:cleanText(r.title,120)||(DOMAINS[a.domain].name+' roadmap'),a,done,score:compute(a).score,cid:typeof r.cid==='string'&&/^[0-9a-f-]{36}$/.test(r.cid)?r.cid:undefined}}
  if(r.type==='niche'){if(!Array.isArray(r.picks))return null;const picks=r.picks.slice(0,12).map(p=>Math.round(num(p,0,3,0)));
   let res;const x=r.res;
   if(x&&typeof x==='object'&&Array.isArray(x.rank)&&x.rank.length===DK.length&&x.rank.every(e=>e&&known(e.k,DK)&&[e.s,e.share,e.fit,e.hit].every(isFinite))&&['conf','gap','H','margin','total'].every(k=>isFinite(x[k])))
@@ -408,10 +415,10 @@ function cleanRep(r){if(!r||typeof r!=='object'||Array.isArray(r))return null;
   return {id,type:'niche',created,title:cleanText(r.title,120)||'Niche analysis',picks,res,score:n.conf}}
  return null}
 const firstCh=n=>{try{if(window.Intl&&Intl.Segmenter)return[...new Intl.Segmenter(undefined,{granularity:'grapheme'}).segment(n)][0].segment}catch(e){}return Array.from(n)[0]||'?'};
-function cleanUser(u){u=u&&typeof u==='object'&&!Array.isArray(u)?u:{};return {name:cleanText(u.name,40)||'Guest',email:cleanText(u.email,254),guest:!!u.guest}}
+function cleanUser(u){u=u&&typeof u==='object'&&!Array.isArray(u)?u:{};return {name:cleanText(u.name,40)||'Guest',email:cleanText(u.email,254),guest:!!u.guest,uid:typeof u.uid==='string'&&/^[0-9a-f-]{36}$/.test(u.uid)?u.uid:''}}
 const me=()=>cleanUser(LS.get('user',null));
 const h8=t=>{let h=5381;t=String(t);for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return (h>>>0).toString(16)};
-const setScope=u=>{SCOPE=u&&u.guest?'g':(u&&u.email?'u'+h8(u.email):'')};
+const setScope=u=>{SCOPE=u&&u.guest?'g':(u&&u.uid?'c'+u.uid.replace(/-/g,'').slice(0,16):(u&&u.email?'u'+h8(u.email):''))};
 
 const ICON={sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/>',moon:'<path d="M20 14a8 8 0 1 1-10-10 6.5 6.5 0 0 0 10 10z"/>',swap:'<path d="M4 8h13l-3-3M20 16H7l3 3"/>',card:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/>',shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',home:'<path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',route:'<circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h8a3 3 0 0 0 0-6H8a3 3 0 0 1 0-6h8"/>',compass:'<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',file:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',chev:'<path d="M6 9l6 6 6-6"/>',
 check:'<path d="M5 12l5 5 9-10"/>',lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M18.5 16v4M16.5 18h4"/>',book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5V21h16v-4M9 7h7"/>',devices:'<rect x="2.5" y="5" width="13" height="10" rx="2"/><rect x="18" y="9" width="3.5" height="10" rx="1.5"/><path d="M6 19h6"/>',chart:'<path d="M3 20h18M6 20v-8M12 20V5M18 20v-5"/>',tag:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.2"/>',receipt:'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',print:'<path d="M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="7" y="14" width="10" height="7"/>',external:'<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'};
@@ -589,7 +596,7 @@ const SEED_A={name:'Demo',age:'18–22',edu:'Undergraduate (in progress)',field:
 function seeds(){const r1={id:uid(),type:'roadmap',created:Date.now()-2*864e5,title:'Technology & AI roadmap',a:SEED_A,done:{'0-0':1,'0-1':1,'0-2':1,'1-0':1}};r1.score=compute(SEED_A).score;
  const pk=[0,0,0,0,0,3,0,3],n=nicheCalc(pk);const r2={id:uid(),type:'niche',created:Date.now()-6*864e5,title:'Niche analysis: '+DOMAINS[n.rank[0].k].name,picks:pk,score:n.conf};return [r1,r2]}
 const okRep=r=>r&&typeof r==='object'&&r.id&&(r.type==='roadmap'?(r.a&&typeof r.a==='object'&&DOMAINS[r.a.domain]):r.type==='niche'?Array.isArray(r.picks):false);
-const reports=()=>{let r=LS.get('reports',null);if(!Array.isArray(r)){r=seeds();LS.set('reports',r)}const seen=new Set(),g=r.map(cleanRep).filter(x=>x&&!seen.has(x.id)&&seen.add(x.id));if(g.length!==r.length)LS.set('reports',g);return g};
+const reports=()=>{let r=LS.get('reports',null);if(!Array.isArray(r)){r=SCOPE==='g'?seeds():[];LS.set('reports',r)}const seen=new Set(),g=r.map(cleanRep).filter(x=>x&&!seen.has(x.id)&&seen.add(x.id));if(g.length!==r.length)LS.set('reports',g);return g};
 const saveReports=r=>LS.set('reports',(Array.isArray(r)?r:[]).map(cleanRep).filter(Boolean));
 
 /* ================= UI helpers ================= */
@@ -727,6 +734,7 @@ function finishBuilder(){
  const stage=$('.stage');analyse(stage,['Weighing education alignment…','Comparing interests with the field…','Checking time against what’s needed…','Calculating fit…'],()=>{
   LS.del('draft_b');if(!B.pre.profile)LS.set('profile',{...LS.get('profile',{}),...profOf(B.a)});
   const r=compute(B.a),rep={id:uid(),type:'roadmap',created:Date.now(),title:`${DOMAINS[B.a.domain].name} roadmap${B.a.pivot?' (pivot)':''}`,score:r.score,a:{...B.a},done:{}};
+  cloudRoadmap(rep,buildPhases(B.a,r));
   const all=reports();all.unshift(rep);saveReports(all);go('roadmap',rep.id)});
 }
 
@@ -756,6 +764,7 @@ function finishN(){
  if(N.fin||!$('.stage'))return;N.fin=1;
  analyse($('.stage'),['Scoring your instincts…','Measuring how clearly one field stands out…','Calculating result clarity…'],()=>{
   const n=nicheCalc(N.picks),rep={id:uid(),type:'niche',created:Date.now(),title:'Niche analysis: '+DOMAINS[n.rank[0].k].name,picks:[...N.picks],score:n.conf};
+  cloudPut('answers',{user_id:cuid(),kind:'niche_interest',question_version:'nq-v1-scenarios',payload:{picks:rep.picks,top:n.rank[0].k,clarity:n.conf}});
   const all=reports();all.unshift(rep);saveReports(all);go('report',rep.id)},'Reading your answers');
 }
 
@@ -805,7 +814,7 @@ function roadmapReport(m,rep){
   $$('.acc',m).forEach((acc,i)=>acc.classList.toggle('done',ph[i].s.every((_,j)=>rep.done[i+'-'+j])))};
  setTimeout(upd,60);
  $$('.acc>button',m).forEach(b=>b.onclick=()=>{const acc=b.parentElement;acc.classList.toggle('open');b.setAttribute('aria-expanded',String(acc.classList.contains('open')))});
- $$('.step',m).forEach(s=>s.onclick=()=>{const k=s.dataset.k;rep.done[k]=!rep.done[k];s.classList.toggle('on',rep.done[k]);s.setAttribute('aria-checked',String(!!rep.done[k]));const all=reports();all.find(x=>x.id===rep.id).done=rep.done;saveReports(all);upd()});
+ $$('.step',m).forEach(s=>s.onclick=()=>{const k=s.dataset.k;rep.done[k]=!rep.done[k];cloudStep(rep,k,!!rep.done[k]);s.classList.toggle('on',rep.done[k]);s.setAttribute('aria-checked',String(!!rep.done[k]));const all=reports();all.find(x=>x.id===rep.id).done=rep.done;saveReports(all);upd()});
  $('#bk').onclick=()=>go('reports');$('#pr').onclick=()=>window.print();$('#rt').onclick=()=>go('builder',{domain:a.domain,from:'retake',profile:profOf(a)});
 }
 function nicheReport(m,rep){
@@ -844,10 +853,10 @@ VIEWS.settings=m=>{
   <div class="sline" style="border-top:1px solid var(--line)"><div><b id="calm-l">Calm mode</b><br><small>Turn off animations and transitions</small></div><button class="tg ${theme.calm?'on':''}" id="calm" type="button" role="switch" aria-checked="${!!theme.calm}" aria-labelledby="calm-l"></button></div></div>
  <div class="card rise" style="margin-top:18px"><h3>About NorthStep</h3><div class="sline"><div><b>How NorthStep stays honest</b><br><small>What the numbers mean, what is still a stand-in, and what is coming.</small></div><button class="btn ghost" id="stt" type="button">Read</button></div><div class="sline" style="border-top:1px solid var(--line)"><div><b>Pre-pay for early access</b><br><small>Hold your place in the closed beta.</small></div><button class="btn ghost" id="stp" type="button">Open</button></div></div>
  <div class="card rise" style="margin-top:18px"><h3>Account</h3><div class="sline"><div><b dir="auto">${esc(user.name)}</b><br><small dir="auto">${esc(user.email)}</small></div><button class="btn ghost" id="so">Sign out</button></div>
-  <p style="margin-top:2px"><small>Create an account to sync across devices (coming soon).</small></p>
+  ${user.guest?'<p style="margin-top:2px"><small>Guest data stays on this device. Create an account to save your answers and progress to the cloud.</small></p>':'<div class="sline"><div><b>Download my data</b><br><small>Everything saved to your account, as a file.</small></div><button class="btn ghost" id="dl" type="button">Download</button></div><div class="err" id="dle" role="alert"></div>'}
   <div class="sline" style="border-top:1px solid var(--line);margin-top:10px"><div><b>Reset demo data</b><br><small>Restore the sample reports</small></div><button class="btn ghost" id="rs">Reset</button></div>
-  <div class="sline" style="border-top:1px solid var(--line)"><div><b>Delete my account and data</b><br><small>${user.guest?'Removes everything saved for this guest on this device':'Removes your account, reports and settings from this device'}. You can sign up again afterwards.</small></div><button class="btn ghost" id="dz">Delete</button></div>
-  <div class="tip" id="dzp" hidden style="margin-top:12px"><b>This can’t be undone</b>Type DELETE to confirm.<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center"><input class="input" id="dzi" aria-label="Type DELETE to confirm" autocomplete="off" style="max-width:200px"><button class="btn" id="dzg" disabled>Delete everything</button><button class="link" id="dzc" type="button">Cancel</button></div></div></div></div>`;
+  <div class="sline" style="border-top:1px solid var(--line)"><div><b>Delete my account and data</b><br><small>${user.guest?'Removes everything saved for this guest on this device':'Permanently deletes your account and everything saved to it, and clears this device'}. You can sign up again afterwards.</small></div><button class="btn ghost" id="dz">Delete</button></div>
+  <div class="tip" id="dzp" hidden style="margin-top:12px"><b>This can’t be undone</b>Type DELETE to confirm.<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center"><input class="input" id="dzi" aria-label="Type DELETE to confirm" autocomplete="off" style="max-width:200px"><button class="btn" id="dzg" disabled>Delete everything</button><button class="link" id="dzc" type="button">Cancel</button></div><div class="err" id="dze" role="alert"></div></div></div></div>`;
  const mark=()=>$$('.preset',m).forEach(b=>{const on=Object.keys(PRESETS[b.dataset.p]).every(k=>PRESETS[b.dataset.p][k]===theme[k]);b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on))});mark();
  $$('.preset',m).forEach(b=>b.onclick=()=>{Object.assign(theme,PRESETS[b.dataset.p]);applyTheme();$$('[data-k]',m).forEach(i=>{i.value=theme[i.dataset.k];$('#h-'+i.dataset.k).textContent=theme[i.dataset.k]});mark()});
  $$('[data-k]',m).forEach(i=>i.oninput=()=>{theme[i.dataset.k]=i.value;$('#h-'+i.dataset.k).textContent=i.value;applyTheme();mark()});
@@ -856,7 +865,7 @@ VIEWS.settings=m=>{
  $$('#tsz button',m).forEach(b=>b.onclick=()=>{theme.ts=+b.dataset.ts;applyTheme();$$('#tsz button',m).forEach(x=>{const on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-pressed',String(on))})});
  $('#so').onclick=()=>logout();$('#stt').onclick=()=>go('trust');$('#stp').onclick=()=>go('pay');$('#rs').onclick=()=>{LS.del('reports');go('settings')};
  $('#dz').onclick=()=>{$('#dzp').hidden=false;$('#dzi').focus()};$('#dzc').onclick=()=>{$('#dzp').hidden=true;$('#dzi').value='';$('#dzg').disabled=true};
- $('#dzi').oninput=e=>{$('#dzg').disabled=e.target.value.trim().toUpperCase()!=='DELETE'};$('#dzg').onclick=()=>{if(!$('#dzg').disabled)wipeMine()};
+ $('#dzi').oninput=e=>{$('#dzg').disabled=e.target.value.trim().toUpperCase()!=='DELETE'};$('#dzg').onclick=()=>{if(!$('#dzg').disabled)wipeMine()};const dl=$('#dl');if(dl)dl.onclick=downloadMine;
 };
 
 
@@ -915,7 +924,7 @@ VIEWS.pivot=m=>{
   <button class="btn" id="pgo" style="margin-top:16px">Build my shortened roadmap ${svg('arrow','')}</button></div></div>`;
   $('#pvr').onchange=e=>{rid=e.target.value;t=null;draw();$('#pvr').focus()};
   $('#pvt').onchange=e=>{t=e.target.value;draw();$('#pvt').focus()};
-  $('#pgo').onclick=()=>{LS.set('pivots',[...[].concat(LS.get('pivots',[])).filter(x=>x&&typeof x==='object').slice(-50),{f,t,at:Date.now()}]);go('builder',{domain:t,from:'pivot',profile:profOf(rep.a),pivot:{from:f,solid:mp.solid,partial:mp.partial,gaps:mp.gaps,sv:mp.sv}})};
+  $('#pgo').onclick=()=>{cloudPut('pivots',{user_id:cuid(),from_field:f,to_field:t,skills_carried:mp.solid.slice(0,8)});LS.set('pivots',[...[].concat(LS.get('pivots',[])).filter(x=>x&&typeof x==='object').slice(-50),{f,t,at:Date.now()}]);go('builder',{domain:t,from:'pivot',profile:profOf(rep.a),pivot:{from:f,solid:mp.solid,partial:mp.partial,gaps:mp.gaps,sv:mp.sv}})};
  };draw();
 };
 /* ================= Pre-pay ================= */
@@ -1024,6 +1033,7 @@ function finishN(){
  if(N.fin||!$('.stage'))return;N.fin=1;
  analyse($('.stage'),['Scoring your instincts…','Measuring how clearly one field stands out…','Calculating result clarity…'],()=>{
   LS.del('draft_n');const n=nicheCalc(N.picks,QS),rep={id:uid(),type:'niche',created:Date.now(),title:'Niche analysis: '+DOMAINS[n.rank[0].k].name,picks:[...N.picks],res:n,score:n.conf};
+  cloudPut('answers',{user_id:cuid(),kind:'niche_interest',question_version:'nq-v1-scenarios',payload:{picks:rep.picks,top:n.rank[0].k,clarity:n.conf}});
   const all=reports();all.unshift(rep);saveReports(all);go('report',rep.id)},'Reading your answers');
 }
 /* ================= v4: Today ================= */
@@ -1035,6 +1045,7 @@ VIEWS.home=m=>{
  const payBar=paid?`<div class="card rise" style="padding:14px 20px;margin-bottom:18px"><div class="rrow"><span class="tag">Closed beta</span><span class="grow">Pre-pay: <b>${PSTAT[paid.status]||'Recorded'}</b> · ${esc(paid.id)}</span><button class="link" data-go="pay" type="button">View</button></div></div>`
   :showPay?`<div class="card rise" style="padding:16px 20px;margin-bottom:18px;background:var(--soft)"><div class="rrow"><span class="tag">Closed beta</span><div class="grow"><b>Hold your place for $${CFG.price}</b><br><small>Pre-pay to help decide what we build first. Credited toward your first full roadmap.</small></div><button class="btn" data-go="pay" type="button">Reserve my spot</button><button class="link" id="phx" type="button">Not now</button></div></div>`:'';
  m.innerHTML=`<div class="wrap"><div class="head rise"><h1>${g}, ${esc(user.name.split(' ')[0])}.</h1><p>${rep?`You’re ${prog}% through ${DOMAINS[rep.a.domain].name}.`:'Start with a roadmap or the niche finder.'} <span class="tag">Demo data</span></p></div>
+ <div id="ckp"></div>
  ${payBar}
  <div class="grid g21"><div class="card rise">${ns?`<small>Your next step · ${esc(ns.ph.t)} (phase ${ns.i+1} of ${ns.n})</small><h2 style="margin:8px 0 18px;font-size:1.5rem">${esc(ns.txt)}</h2><button class="btn" id="nd">Mark done</button> <button class="btn ghost" data-go="roadmap">View roadmap</button>`:rep?'<h2>Every step is done.</h2><p class="muted" style="margin:8px 0 16px">Re-check your fit or try a pivot.</p><button class="btn" data-go="pivot">Explore a pivot</button>':'<h2>No roadmap yet.</h2><p class="muted" style="margin:8px 0 16px">Answer a few questions and we’ll plan your first phase.</p><button class="btn" data-go="builder">Build a roadmap</button>'}</div>
  <div class="card rise" style="text-align:center">${rep?gaugeHTML(prog,130,'Progress '+prog+' percent'):''}<small style="display:block;margin-top:8px">Overall progress</small></div></div>
@@ -1044,7 +1055,7 @@ VIEWS.home=m=>{
  <div class="grid g2" style="margin-top:18px">${[['discover','compass','Niche finder','Not sure of your field? Check your result clarity'],['reports','file','Reports','Print or copy a summary']].map(x=>`<div class="card lift rise" data-go="${x[0]}" role="button" tabindex="0"><div class="ico">${svg(x[1])}</div><h3>${x[2]}</h3><p class="muted">${x[3]}</p></div>`).join('')}</div></div>`;
  $$('[data-go]',m).forEach(e=>e.onclick=()=>go(e.dataset.go));
  const px=$('#phx');if(px)px.onclick=()=>{LS.set('payHide',Date.now());go('home',null,'replace')};
- const nd=$('#nd');if(nd)nd.onclick=()=>{rep.done=rep.done||{};rep.done[ns.i+'-'+ns.j]=1;saveReports(reports().map(x=>x.id===rep.id?rep:x));go('home')};
+ const nd=$('#nd');if(nd)nd.onclick=()=>{rep.done=rep.done||{};rep.done[ns.i+'-'+ns.j]=1;cloudStep(rep,ns.i+'-'+ns.j,true);saveReports(reports().map(x=>x.id===rep.id?rep:x));go('home')};
  $$('[data-d]',m).forEach(b=>b.onclick=()=>{const i=+b.dataset.d;days[i]=days[i]?0:1;setDays(days);b.classList.toggle('on',!!days[i]);b.setAttribute('aria-pressed',String(!!days[i]));$('#dc').textContent=`${days.filter(Boolean).length} of 5 practice days`});
 };
 /* ================= Roadmap tab: your current plan; new ones start from here ================= */
@@ -1112,13 +1123,13 @@ VIEWS.pay=m=>{
 };
 /* ================= v4: Trust ================= */
 VIEWS.trust=m=>{
- const roadmap=[['Adaptive AI questions','Next question chosen by a model from your earlier answers','Rule-based now','Planned'],['Resources grounded by RAG','Each suggestion links to a checked source','Pipeline built, not integrated','In build'],['Accounts and sync','Same journey on every device','Browser-only today','Planned'],['Calibrated fit indicator','Fit range checked against real outcomes','Demo model','In build'],['Course discounts','Partner prices, always disclosed','Neutrality to be solved first','On hold'],['Payments and invoices','Real checkout with receipts','Provider not chosen','Planned']];
+ const roadmap=[['Adaptive AI questions','Next question chosen by a model from your earlier answers','Rule-based now','Planned'],['Resources grounded by RAG','Each suggestion links to a checked source','Pipeline built, not integrated','In build'],['Accounts and sync','Same journey on every device','Sign-in and cloud saving are live; reports reopen on the same device for now','In build'],['Calibrated fit indicator','Fit range checked against real outcomes','Demo model','In build'],['Course discounts','Partner prices, always disclosed','Neutrality to be solved first','On hold'],['Payments and invoices','Real checkout with receipts','Provider not chosen','Planned']];
  m.innerHTML=`<div class="wrap" style="max-width:860px"><div class="head rise"><h1>How NorthStep stays honest</h1><p>What the numbers mean, what is still a stand-in, and what is coming.</p></div>
  <div class="grid g2"><div class="card rise"><div class="ico">${svg('target')}</div><h3>What the fit indicator is</h3><p class="muted">An estimate of how well a path suits you. It predicts whether you’ll complete the roadmap and say it fits. It never predicts jobs or pay.</p></div>
  <div class="card rise"><div class="ico">${svg('chart')}</div><h3>How we will prove it</h3><p class="muted">Calibration: when we say 70, about 70 in 100 people like you should agree. We track Brier score and calibration error, and the bar is 92 of 100 test cases passed.</p></div>
  <div class="card rise"><div class="ico">${svg('shield')}</div><h3>Known limits</h3><p class="muted">Early data skews toward people who succeeded and wrote about it. Labels arrive late. Until we correct for that, every score carries “Preview, not yet calibrated”.</p></div>
  <div class="card rise"><div class="ico">${svg('compass')}</div><h3>Result clarity is different</h3><p class="muted">The niche finder shows how clearly your answers point one way. A high number is a clear result, not a better fit.</p></div></div>
- <div class="sec">Neutrality and privacy</div><div class="card rise"><div class="row"><span class="grow">Resources are matched to your budget, never to commission</span></div><div class="row"><span class="grow">For ages 16 and over</span></div><div class="row"><span class="grow">In this prototype your data stays in your browser</span></div><div class="row"><span class="grow">Anything tagged Demo data is a stand-in</span></div></div>
+ <div class="sec">Neutrality and privacy</div><div class="card rise"><div class="row"><span class="grow">Resources are matched to your budget, never to commission</span></div><div class="row"><span class="grow">For ages 16 and over</span></div><div class="row"><span class="grow">Signed-in answers and progress are saved to your account. Guest data stays in your browser.</span></div><div class="row"><span class="grow">Anything tagged Demo data is a stand-in</span></div></div>
  <div class="sec">What’s coming</div><div class="card rise">${roadmap.map(x=>`<div class="row"><div class="grow"><b>${x[0]}</b><br><small>${x[1]} · Today: ${x[2]}</small></div><span class="tag n">${x[3]}</span></div>`).join('')}</div></div>`;
 };
 /* Pre-pay and Trust are reached from Today, Settings and the fit indicator, so they get a Back link */
@@ -1144,22 +1155,64 @@ VIEWS.report=(m,id)=>{_rv(m,id);const rep=reports().find(r=>r.id===id),w=$('.wra
  w.insertAdjacentHTML('beforeend',`<div class="card rise noprint" style="margin-top:18px"><h3>Take this with you</h3><div style="margin-top:12px"><button class="btn" id="rp">${svg('print')} Print or save as PDF</button> <button class="btn ghost" id="rc">${svg('copy')} Copy summary</button> <button class="btn ghost" disabled>Share link · coming soon</button></div></div>${dq.length?`<div class="card rise" style="margin-top:18px"><h3>Your field-specific answers</h3><p style="margin-top:8px">${dq.map(x=>`<span class="sk c">${esc(x)}</span>`).join('')}</p></div>`:''}`);
  $('#rp').onclick=()=>window.print();$('#rc').onclick=e=>{const b=e.currentTarget,h=b.innerHTML;copyTxt(summary(rep)).then(ok=>{b.textContent=ok?'Copied':'Unavailable';setTimeout(()=>b.innerHTML=h,1800)})}};
 
-/* ================= Auth =================
-   This build keeps accounts on this device only (salted + hashed, never stored in plain text).
-   It protects against honest mistakes, not against someone who controls the device.
-   Real accounts, rate limits and sessions belong on the server: see BACKEND-CHECKLIST.md. */
+/* ================= Auth + cloud saving =================
+   Sign-in is Supabase Auth (email confirmed, password min 10). Guests stay on this device.
+   Every cloud write is an insert into a table with row-level security: a user can only touch their own rows.
+   The fit score is still computed in this page. The scoring server (not built yet) will own it. */
+const CLOUD_CFG={url:'https://zrtiqzsytbnjnkgoieef.supabase.co',key:'sb_publishable_4HOjw-4VI2jdLzpqSUw2rA_k0aYRsIE'};
+const CONSENT_V='draft-2026-11-26';
+const CLOUD=(()=>{try{if(!window.supabase||!window.supabase.createClient)return null;
+ return window.supabase.createClient(CLOUD_CFG.url,CLOUD_CFG.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}})}catch(e){return null}})();
 let mode='in',busy=false;
-const DEMO={email:'demo@northstep.app',pw:'northstep123'};
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const rnd=()=>{try{return Array.from(crypto.getRandomValues(new Uint8Array(12)),b=>b.toString(16).padStart(2,'0')).join('')}catch(e){return Math.random().toString(16).slice(2)+Date.now().toString(16)}};
-function getAccts(){const a=LS.get('accounts',null),o={};if(a&&typeof a==='object'&&!Array.isArray(a))Object.keys(a).forEach(k=>{const v=a[k];if(EMAIL_RE.test(k)&&v&&typeof v.s==='string'&&typeof v.h==='string')o[k]={n:cleanText(v.n,40)||'Friend',s:v.s.slice(0,40),h:v.h.slice(0,200),at:+v.at||0}});return o}
-async function hashPw(pw,salt){const enc=new TextEncoder();
- try{if(window.crypto&&crypto.subtle){const k=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveBits']),b=await crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode(salt),iterations:150000,hash:'SHA-256'},k,256);return 'p1:'+Array.from(new Uint8Array(b),x=>x.toString(16).padStart(2,'0')).join('')}}catch(e){}
- let h=5381;const t=salt+pw;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return 'w0:'+(h>>>0).toString(16)}
-const same=(a,b)=>{if(a.length!==b.length)return false;let d=0;for(let i=0;i<a.length;i++)d|=a.charCodeAt(i)^b.charCodeAt(i);return d===0};
+const uuid4=()=>{try{if(crypto.randomUUID)return crypto.randomUUID()}catch(e){}
+ return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c==='x'?r:(r&3|8)).toString(16)})};
+const cuid=()=>me().uid;
+const cloudOn=()=>!!CLOUD&&!me().guest&&!!me().uid;
+const srcCode=()=>{try{const p=new URLSearchParams(location.search),v=String(p.get('src')||p.get('ref')||'').toLowerCase();return /^[a-z0-9_-]{1,60}$/.test(v)?v:''}catch(e){return ''}};
+/* write queue: kept on this device until the server accepts each row, so a bad connection loses nothing */
+const CQ={busy:false,get(){return [].concat(LS.get('cq',[])).filter(x=>x&&typeof x==='object'&&typeof x.t==='string'&&x.row&&typeof x.row==='object')},set(v){LS.set('cq',v.slice(-300))}};
+function cloudPut(t,row){if(!cloudOn())return;const q=CQ.get();q.push({t,row});CQ.set(q);cloudFlush()}
+async function cloudFlush(){if(CQ.busy||!cloudOn())return;CQ.busy=true;
+ try{for(let guard=0;guard<500;guard++){const q=CQ.get();if(!q.length)break;const op=q[0];
+   if(op.row.user_id===cuid()){let r;
+    try{r=await CLOUD.from(op.t).insert(op.row)}catch(e){break}
+    if(r.error){const c=String(r.error.code||'');
+     if(!c||/^PGRST3/.test(c)||r.status===401||r.status>=500)break;   /* offline, signed out or server trouble: keep it and retry later */
+     console.warn('NorthStep: dropped a row the server refused',op.t,c)}}
+   CQ.set(CQ.get().slice(1))}}   /* re-read: more rows may have been added while we waited */
+ finally{CQ.busy=false}}
+addEventListener('online',()=>cloudFlush());
+function cloudRoadmap(rep,ph){if(!cloudOn())return;const a=rep.a,cid=uuid4();rep.cid=cid;
+ const p=cleanA(a);delete p.name;
+ cloudPut('answers',{user_id:cuid(),kind:'questionnaire',question_version:'q-v4',payload:p});
+ cloudPut('roadmaps',{id:cid,user_id:cuid(),niche_id:(a.domain+(a.track?'-'+a.track:'')).slice(0,60),phase1_total:Math.max(1,Math.min(200,ph[0].s.length))})}
+function cloudStep(rep,k,done){const m=/^0-(\d{1,2})$/.exec(String(k));if(!m||!rep||!rep.cid||!cloudOn())return;   /* only Phase 1 counts toward the label */
+ cloudPut('step_events',{user_id:cuid(),roadmap_id:rep.cid,step_id:'p1-'+m[1],done:!!done})}
+async function ensureProfile(u){
+ const g=await CLOUD.from('profiles').select('user_id').eq('user_id',u.id).maybeSingle();if(g.error)throw g.error;
+ if(g.data){CLOUD.from('profiles').update({last_active_at:new Date().toISOString()}).eq('user_id',u.id).then(()=>{},()=>{});return}
+ const md=u.user_metadata||{},country=known(md.country,['India','US','Other']),band=known(md.age_band,['16-17','18-22','23-29','30-39','40+']);
+ if(!country||!band||typeof md.consent_version!=='string')throw new Error('incomplete');
+ const row={user_id:u.id,country,age_band:band,consent_version:md.consent_version.slice(0,40)};
+ if(typeof md.signup_source==='string'&&/^[a-z0-9_-]{1,60}$/.test(md.signup_source))row.signup_source=md.signup_source;
+ const r=await CLOUD.from('profiles').insert(row);if(r.error&&r.error.code!=='23505')throw r.error}
+async function cloudEnter(u){await ensureProfile(u);const md=u.user_metadata||{};
+ enter({name:cleanText(md.name,40)||'Friend',email:u.email||'',uid:u.id});cloudFlush()}
+function authMsg(er){const c=String(er&&er.code||''),st=er&&er.status;
+ if(c==='invalid_credentials')return 'That email and password don’t match.';
+ if(c==='email_not_confirmed')return 'Please confirm your email first. Check your inbox for our link.';
+ if(c==='weak_password')return 'That password is too easy to guess. Try a longer one.';
+ if(c==='user_already_exists')return 'There’s already an account with this email. Try signing in instead.';
+ if(c==='email_address_invalid')return 'That email address doesn’t look right.';
+ if(c==='signup_disabled')return 'New sign-ups are closed right now.';
+ if(c==='over_email_send_rate_limit'||c==='over_request_rate_limit'||st===429)return 'Too many tries. Wait a few minutes and try again.';
+ if(/not authorized/i.test(String(er&&er.message||'')))return 'We couldn’t send the confirmation email yet. Please tell the NorthStep team.';
+ if(!st||st>=500)return 'We couldn’t reach NorthStep. Check your connection and try again.';
+ return 'Something went wrong. Please try again.'}
 function setMode(mm){mode=mm;$$('#tabs button').forEach(x=>{const on=x.dataset.m===mm;x.classList.toggle('on',on);x.setAttribute('aria-pressed',String(on))});
- const tb=$('#tabs'),nf=$('#nf'),lt=$('#lt'),sp=$('#lbtn span'),le=$('#lerr'),lp=$('#lp');if(tb)tb.classList.toggle('r',mm==='up');if(nf)nf.style.display=mm==='up'?'block':'none';
- if(lt)lt.textContent=mm==='up'?'Create your account':'Welcome back';if(sp)sp.textContent=mm==='up'?'Create account':'Sign in';if(le)le.textContent='';if(lp)lp.autocomplete=mm==='up'?'new-password':'current-password'}
+ const tb=$('#tabs'),nf=$('#nf'),sf=$('#sf'),cw=$('#consw'),lt=$('#lt'),sp=$('#lbtn span'),le=$('#lerr'),lo=$('#lok'),lp=$('#lp');if(tb)tb.classList.toggle('r',mm==='up');if(nf)nf.style.display=mm==='up'?'block':'none';
+ if(sf)sf.style.display=mm==='up'?'block':'none';if(cw)cw.style.display=mm==='up'?'flex':'none';
+ if(lt)lt.textContent=mm==='up'?'Create your account':'Welcome back';if(sp)sp.textContent=mm==='up'?'Create account':'Sign in';if(le)le.textContent='';if(lo)lo.textContent='';if(lp)lp.autocomplete=mm==='up'?'new-password':'current-password'}
 $$('#tabs button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));
 $('#pwt').onclick=e=>{const lp=$('#lp'),on=lp.type==='password';lp.type=on?'text':'password';e.currentTarget.textContent=on?'Hide':'Show';e.currentTarget.setAttribute('aria-pressed',String(on))};
 function enter(user){user=cleanUser(user);setScope(user);LS.set('user',user);
@@ -1167,40 +1220,68 @@ function enter(user){user=cleanUser(user);setScope(user);LS.set('user',user);
  $('#login').classList.add('gone');$('#app').classList.add('on');document.body.classList.add('signed');main.innerHTML='';state={view:'',param:null};
  const r=parseRoute();if(r)go(r.v,r.p,'replace');else go('home',null,'replace')}
 function showLogin(note){LS.del('user');SCOPE='';document.body.classList.remove('signed');$('#app').classList.remove('on');$('#login').classList.remove('gone');$('#lp').value='';main.innerHTML='';state={view:'',param:null};
- B=undefined;N=undefined;PS={s:1,e:'',t:'',err:''};try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}$('#lerr').textContent=typeof note==='string'?note:''}
-function logout(note){showLogin(note)}
-function wipeMine(){const u=me(),pre='pb_'+SCOPE+'_';try{Object.keys(localStorage).filter(k=>k.indexOf(pre)===0).forEach(k=>localStorage.removeItem(k))}catch(e){}
+ B=undefined;N=undefined;PS={s:1,e:'',t:'',err:''};try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}$('#lerr').textContent=typeof note==='string'?note:'';$('#lok').textContent=''}
+function logout(note){const u=me();if(CLOUD&&!u.guest&&u.uid)CLOUD.auth.signOut().catch(()=>{});showLogin(note)}
+async function wipeMine(){const u=me(),pre='pb_'+SCOPE+'_',er=$('#dze');
+ if(!u.guest&&CLOUD){try{const r=await CLOUD.rpc('delete_my_account');if(r.error)throw r.error}
+  catch(x){if(er)er.textContent='We couldn’t delete your account right now. Check your connection and try again.';return}
+  try{await CLOUD.auth.signOut({scope:'local'})}catch(x){}}
+ try{Object.keys(localStorage).filter(k=>k.indexOf(pre)===0).forEach(k=>localStorage.removeItem(k))}catch(e){}
  Object.keys(mem).filter(k=>k.indexOf(pre)===0).forEach(k=>delete mem[k]);
- if(!u.guest){const a=getAccts();if(own(a,u.email)){delete a[u.email];LS.set('accounts',a)}LS.set('outbox',[].concat(LS.get('outbox',[])).filter(x=>x&&x.e!==u.email))}
- logout('Your account and data were deleted from this device. You can create a new one any time.')}
+ showLogin(u.guest?'Your guest data was deleted from this device.':'Your account and data were deleted. You can create a new account any time.')}
+async function downloadMine(){const er=$('#dle');if(er)er.textContent='';
+ try{const r=await CLOUD.rpc('export_my_data');if(r.error)throw r.error;
+  const b=new Blob([JSON.stringify(r.data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='northstep-my-data.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+ catch(x){if(er)er.textContent='We couldn’t prepare your data right now. Try again in a moment.'}}
 $('#out').onclick=()=>logout();
-$('#demo').onclick=()=>{setMode('in');$('#age').checked=true;$('#le').value=DEMO.email;$('#lp').value=DEMO.pw;$('#lf').requestSubmit()};
 $('#guest').onclick=()=>{if(!$('#age').checked)return void($('#lerr').textContent='NorthStep is for people 16 and over. Please confirm your age to continue.');enter({name:'Guest',email:'',guest:true})};
-function lockFail(){const l=LS.get('lock',null)||{n:0,until:0};l.n=(+l.n||0)+1;if(l.n>=5)l.until=Date.now()+Math.min(300000,30000*Math.pow(2,l.n-5));LS.set('lock',l)}
 $('#lf').onsubmit=async e=>{e.preventDefault();if(busy)return;
- const raw=$('#le').value,em=cleanEmail(raw),pw=$('#lp').value,btn=$('#lbtn'),err=$('#lerr');
+ const raw=$('#le').value,em=cleanEmail(raw),pw=$('#lp').value,btn=$('#lbtn'),err=$('#lerr'),ok=$('#lok');ok.textContent='';
  const fail=t=>{err.textContent=t;$('#lf').classList.remove('shake');void $('#lf').offsetWidth;$('#lf').classList.add('shake')};
- const lk=LS.get('lock',null);if(lk&&+lk.until>Date.now())return fail('Too many tries. Wait '+Math.ceil((lk.until-Date.now())/1000)+' seconds and try again.');
- if(!$('#age').checked)return fail('Please confirm you are 16 or older.');
+ if(!CLOUD)return fail('Sign-in isn’t available right now. Check your connection, or continue as a guest.');
  if(!em)return fail(raw.trim()?'That email address doesn’t look right.':'Please enter your email address.');
  if(!pw)return fail('Please enter your password.');
  if(!pw.trim())return fail('Your password can’t be only spaces.');
  if(pw.length>128)return fail('That password is too long (128 characters at most).');
- if(mode==='up'&&pw.length<8)return fail('Use at least 8 characters for your password.');
+ let meta=null;
+ if(mode==='up'){
+  if(!$('#age').checked)return fail('Please confirm you are 16 or older.');
+  if(pw.length<10)return fail('Use at least 10 characters for your password.');
+  const country=known($('#lc').value,['India','US','Other']),band=known($('#la').value,['16-17','18-22','23-29','30-39','40+']);
+  if(!country)return fail('Please choose your country.');
+  if(!band)return fail('Please choose your age group.');
+  if(!$('#cons').checked)return fail('Please tick the box to agree and continue.');
+  meta={name:cleanText($('#ln').value,40)||'Friend',country,age_band:band,consent_version:CONSENT_V};const sc=srcCode();if(sc)meta.signup_source=sc}
  busy=true;err.textContent='';btn.innerHTML='<div class="spin"></div>';btn.style.pointerEvents='none';btn.setAttribute('aria-busy','true');
- let user=null,msg='';
- try{const accts=getAccts();
-  if(mode==='up'){
-   if(em===DEMO.email||own(accts,em))msg='There’s already an account with this email. Try signing in instead.';
-   else{const salt=rnd(),nm=cleanText($('#ln').value,40)||'Friend';accts[em]={n:nm,s:salt,h:await hashPw(pw,salt),at:Date.now()};LS.set('accounts',accts);user={name:nm,email:em}}}
-  else if(em===DEMO.email&&pw===DEMO.pw)user={name:'Demo User',email:em};
-  else if(own(accts,em)&&same(await hashPw(pw,accts[em].s),accts[em].h))user={name:accts[em].n,email:em};
-  else{lockFail();msg='That email and password don’t match.'}
-  await sleep(400)}
- catch(x){msg='Something went wrong. Please try again.'}
+ let msg='',sent=false,done=false;
+ try{
+  if(mode==='up'){const r=await CLOUD.auth.signUp({email:em,password:pw,options:{data:meta,emailRedirectTo:location.origin+location.pathname}});
+   if(r.error)msg=authMsg(r.error);else if(r.data&&r.data.session){await cloudEnter(r.data.session.user);done=true}else sent=true}
+  else{const r=await CLOUD.auth.signInWithPassword({email:em,password:pw});
+   if(r.error)msg=authMsg(r.error);else{await cloudEnter(r.data.user);done=true}}}
+ catch(x){msg=x&&x.message==='incomplete'?'Your account is missing some sign-up details. Please create it again.':'We couldn’t finish signing you in. Check your connection and try again.'}
  busy=false;btn.removeAttribute('aria-busy');btn.style.pointerEvents='';btn.innerHTML=`<span>${mode==='up'?'Create account':'Sign in'}</span>`;
- if(!user)return fail(msg);
- LS.del('lock');$('#lp').value='';enter(user)};
+ if(done){$('#lp').value='';return}
+ if(sent){setMode('in');$('#le').value=em;$('#lp').value='';ok.textContent='We sent a link to '+em+'. Open it to confirm your email, then sign in here. If you already have an account, just sign in.';return}
+ fail(msg)};
+/* Day-21 check-in: the label (did this path work for you?) needs it, so it is asked for as soon as it opens. */
+async function renderCheckin(m,rep){const host=$('#ckp',m);if(!host||!rep||!rep.cid||!cloudOn())return;
+ let r1,r2;try{[r1,r2]=await Promise.all([CLOUD.from('roadmaps').select('started_at').eq('id',rep.cid).maybeSingle(),CLOUD.from('checkins').select('id').eq('roadmap_id',rep.cid).maybeSingle()])}catch(x){return}
+ if(!document.body.contains(host)||r1.error||!r1.data)return;
+ if(r2&&r2.data){host.innerHTML='<div class="card rise" style="padding:14px 20px;margin-bottom:18px"><div class="rrow"><span class="tag">Day 21</span><span class="grow">Thanks, your check-in is in.</span></div></div>';return}
+ if(Date.now()<new Date(r1.data.started_at).getTime()+21*864e5)return;
+ const rate=(id,lbl)=>`<div style="margin-top:14px"><b>${lbl}</b><div class="days" id="${id}" role="radiogroup" aria-label="${lbl}" style="margin-top:8px">${[1,2,3,4,5].map(n=>`<button type="button" role="radio" aria-checked="false" data-n="${n}">${n}</button>`).join('')}</div><small>1 = not at all, 5 = very much</small></div>`;
+ host.innerHTML=`<div class="card rise" style="margin-bottom:18px;background:var(--soft)"><span class="tag">Day 21 check-in</span><h3 style="margin:10px 0 2px">Three weeks in. How is it going?</h3><p class="muted">Two quick questions. Your honest answer helps us learn what actually works.</p>
+ ${rate('ck1','How well does this path fit you now?')}${rate('ck2','Did this field feel right? (optional)')}
+ <div class="field"><label for="ckc">Anything you want to add? (optional)</label><textarea class="input" id="ckc" maxlength="1000" rows="3" style="resize:vertical"></textarea></div>
+ <div class="err" id="cke" role="alert"></div><button class="btn" id="cks" type="button" disabled style="margin-top:8px">Send check-in</button></div>`;
+ const pick={};$$('.days',host).forEach(g=>$$('button',g).forEach(b=>b.onclick=()=>{pick[g.id]=+b.dataset.n;$$('button',g).forEach(x=>{const on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-checked',String(on))});$('#cks',host).disabled=!pick.ck1}));
+ $('#cks',host).onclick=async()=>{const b=$('#cks',host);b.disabled=true;$('#cke',host).textContent='';
+  const row={user_id:cuid(),roadmap_id:rep.cid,fit_rating:pick.ck1,niche_felt_right:pick.ck2||null,comment:cleanText($('#ckc',host).value,1000)||null};
+  let er=null;try{const r=await CLOUD.from('checkins').insert(row);er=r.error}catch(x){er={code:''}}
+  if(er&&er.code!=='23505'){$('#cke',host).textContent=er.code==='22023'?'The check-in opens on day 21. Please come back then.':'We couldn’t send that. Check your connection and try again.';b.disabled=false;return}
+  host.innerHTML='<div class="card rise" style="padding:14px 20px;margin-bottom:18px"><div class="rrow"><span class="tag">Day 21</span><span class="grow">Thanks, your check-in is in.</span></div></div>'}}
+{const _h=VIEWS.home;VIEWS.home=(m,x)=>{_h(m,x);renderCheckin(m,reports().filter(r=>r.type==='roadmap')[0])}}
 /* Two tabs open: signing out or changing data in one is reflected in the other. */
 window.addEventListener('storage',e=>{if(!e.key||e.key.indexOf('pb_')!==0)return;
  if(e.key==='pb_user'){let u=null;try{u=e.newValue?JSON.parse(e.newValue):null}catch(x){}const signed=document.body.classList.contains('signed');if(!u&&signed)showLogin();else if(u&&!signed)enter(u);return}
@@ -1209,7 +1290,13 @@ window.addEventListener('storage',e=>{if(!e.key||e.key.indexOf('pb_')!==0)return
 /* Banner: offline or blocked storage */
 window.__bn=function(){const b=document.getElementById('bn');if(!b)return;const t=[];if(navigator.onLine===false)t.push('You’re offline. NorthStep keeps working here, and anything it needs to send goes out when you’re back online.');if(LS.bad)t.push('This browser isn’t letting NorthStep save, so your progress will be lost when you close the page.');b.textContent=t.join(' ');b.hidden=!t.length};
 addEventListener('online',window.__bn);addEventListener('offline',window.__bn);window.__bn();
-const saved=LS.get('user',null);if(saved&&typeof saved==='object'&&!Array.isArray(saved)){enter(saved)}
+if(CLOUD)CLOUD.auth.onAuthStateChange(ev=>{if(ev==='SIGNED_OUT'&&document.body.classList.contains('signed')&&!me().guest)showLogin('You were signed out. Please sign in again.')});
+(async()=>{let note='';
+ if(/error_code=otp_expired|error_description=/.test(location.hash))note='That link has expired or was already used. Sign in, or create your account again to get a new link.';
+ if(CLOUD){try{const g=await CLOUD.auth.getSession();if(g.data&&g.data.session){await cloudEnter(g.data.session.user);return}}catch(e){note=note||'We couldn’t finish signing you in. Check your connection and sign in again.'}}
+ const saved=LS.get('user',null);
+ if(saved&&typeof saved==='object'&&!Array.isArray(saved)&&saved.guest){enter(saved);return}
+ if(saved||note)showLogin(note||'Please sign in again.')})();
 </script>
 </body>
 </html>
