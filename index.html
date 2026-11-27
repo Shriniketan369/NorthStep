@@ -111,6 +111,73 @@ aside .brand{font-size:1.625rem;padding:0 12px 22px}
 .pph .pht{display:flex;justify-content:space-between;gap:10px;font-size:0.8125rem;margin-bottom:5px}.pph .pht span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pph .pht small{flex:none}
 .pph.cur .pht span{font-weight:600}
 .pft{display:flex;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;font-size:0.8125rem;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+/* sign-up: everything fits on one screen */
+.l-form.su h2{font-size:1.5rem;margin-bottom:2px}
+.l-form.su .tabs{margin:12px 0 0}
+.l-form.su .field{margin-top:10px}.l-form.su .field label{margin-bottom:4px}
+.l-form.su .input{padding:9px 12px;font-size:0.875rem;border-radius:10px}
+.l-form.su #sf{display:grid!important;grid-template-columns:1fr 1fr;gap:0 12px}
+.l-form.su .agel{margin-top:10px;font-size:0.75rem;line-height:1.4}.l-form.su .agel input{width:16px;height:16px}
+.l-form.su .err{min-height:0;margin-top:6px}
+.l-form.su #lbtn{margin-top:10px;padding:10px 16px}.l-form.su #guest{margin-top:8px;padding:10px 16px}
+.l-form.su .l-note,.l-form.su #ls{display:none}
+.l-form.su{padding:0}#login:has(.l-form.su) .l-form-wrap{padding-top:14px;padding-bottom:14px}
+@media(max-width:860px){.l-form.su .input{font-size:1rem}}
+.blob{display:none}.l-art{background:color-mix(in srgb,var(--accent) 7%,var(--sidebar))}
+/* small buttons, photo, pop-ups */
+.btn.sm{padding:6px 12px;font-size:0.8125rem;border-radius:10px;font-weight:500}
+.btn.danger{background:var(--err);color:#fff}.btn.danger:hover{filter:brightness(1.08)}
+.avb{position:relative;border-radius:50%;display:inline-grid;flex:none;color:inherit}
+.avb .avh{position:absolute;inset:0;border-radius:50%;display:grid;place-items:center;background:rgba(0,0,0,.5);color:#fff;opacity:0;transition:opacity .2s}
+.avb .avh svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.avb:hover .avh,.avb:focus-visible .avh{opacity:1}
+.ppa.split{justify-content:space-between}
+.pp .mt b,.pp .mt small{display:block}.pp .mt b{line-height:1.25}
+.pp .btn.sm{padding:5px 10px}
+.mdl-scrim{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.45);animation:fade .2s both}
+.mdl{width:min(440px,100%);background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:0 24px 64px -16px rgba(0,0,0,.4);max-height:calc(100vh - 32px);overflow-y:auto}
+.mdl h3{font-size:1.25rem;margin-bottom:8px}.mdl .field{margin-top:14px}.mdl .err{min-height:0}
+.mdl-act{display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap;margin-top:20px}
+@keyframes fade{from{opacity:0}}
+#ntc{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:0.875rem;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:300;max-width:calc(100vw - 32px)}
+#ntc.on{opacity:1;transform:translate(-50%,0)}
+/* Today and roadmap cards */
+.nsa{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.nsx{margin-top:22px;padding-top:18px;border-top:1px solid var(--line);display:grid;gap:16px}
+.nsx h4{font-size:0.8125rem;font-weight:500;color:var(--muted);margin-bottom:6px}.nsx p{font-size:0.875rem}
+.nsl{margin:0;padding-left:20px;display:grid;gap:4px;font-size:0.875rem}
+.pcue{display:flex;align-items:center;gap:6px;margin-top:12px;font-size:0.8125rem;font-weight:500;color:var(--ink-accent)}.pcue svg{width:16px;height:16px}
+[data-prog]{cursor:pointer}
+.flash{animation:flash 1.8s ease-out}@keyframes flash{0%,40%{box-shadow:0 0 0 3px var(--accent)}100%{box-shadow:0 0 0 3px transparent}}
+details.calc{padding:0}details.calc>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;margin:0;cursor:pointer;color:var(--text);font-size:1rem;border-radius:var(--radius)}
+details.calc>summary::-webkit-details-marker{display:none}details.calc>summary small{display:block;font-weight:400;color:var(--muted)}
+details.calc>summary .chev{width:18px;height:18px;flex:none;transition:transform .25s var(--ease)}details.calc[open]>summary .chev{transform:rotate(180deg)}
+details.calc>.cin{padding:0 22px 20px}details.calc .disc{margin-top:14px;text-align:left}
+.tw{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+.card .rrow .racts{gap:18px}
+#spe,#dle,#ppe{min-height:0}
+/* collapsible sidebar (desktop) */
+aside .sbt{display:flex;align-items:center;gap:.28em;width:100%;text-align:left;color:inherit;border-radius:12px;font-size:1.625rem;padding:0 12px 22px;line-height:1}
+aside .sbt:hover .mk{transform:scale(1.08)}aside .sbt .mk{transition:transform .25s var(--ease)}
+@media(min-width:861px){
+ aside .sbt{cursor:w-resize}body.sbc aside .sbt{cursor:e-resize}
+ #app{transition:grid-template-columns .28s var(--ease)}
+ body.sbc #app{grid-template-columns:72px 1fr}
+ aside{position:relative;z-index:90}
+ body.sbc:not(.sbp) aside{padding-left:12px;padding-right:12px;overflow:hidden}
+ body.sbc:not(.sbp) aside .logo,body.sbc:not(.sbp) .nav span,body.sbc:not(.sbp) .asd .tag,body.sbc:not(.sbp) .mt,body.sbc:not(.sbp) #out{display:none}
+ body.sbc:not(.sbp) .nav{justify-content:center;padding:10px}
+ body.sbc:not(.sbp) aside .sbt{justify-content:center;padding:0 0 22px}
+ body.sbc:not(.sbp) .me{justify-content:center;padding:8px;background:transparent}
+ body.sbc:not(.sbp) .asd{justify-content:center;padding:0 0 10px!important}
+ body.sbc.sbp aside{width:244px;margin-right:-172px;box-shadow:14px 0 40px -14px rgba(0,0,0,.3)}
+}
+@media(max-width:860px){aside .sbt{display:none}}
+/* download as PDF */
+.pdoc{display:none}
+@media print{body.printing #app,body.printing #login,body.printing #ld,body.printing #thm2,body.printing #pnl,body.printing #mdl,body.printing #ntc{display:none!important}
+ body.printing .pdoc{display:block!important;color:#000;background:#fff;font:11pt/1.5 Calibri,Arial,sans-serif}
+ .pdoc h1{font-size:22pt;margin:0 0 6pt}.pdoc h2{font-size:15pt;margin:16pt 0 4pt}.pdoc h3{font-size:12pt;margin:10pt 0 2pt}.pdoc p{margin:0 0 3pt;overflow-wrap:anywhere}.pdoc pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:7.5pt;line-height:1.3}}
 .guest-only{display:none}body.guest .guest-only{display:revert}
 body:not(.guest) .dm{display:none}
 .sline>:first-child{flex:1 1 auto;min-width:0}
@@ -259,7 +326,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:6px}
 #ld{position:fixed;inset:0;z-index:99;background:var(--bg);display:grid;place-items:center;transition:opacity .7s var(--ease),visibility .7s}#ld.out{opacity:0;visibility:hidden}
 .lw{width:min(340px,80vw);text-align:center}.lw svg{margin-bottom:10px}
 .lb{height:4px;border-radius:9px;background:var(--line);overflow:hidden;margin-top:26px}.lb i{display:block;height:100%;width:0;background:var(--accent);transition:width 3s var(--ease)}
-#lc{margin-top:14px;min-height:24px;transition:opacity .25s}
+#ldc{margin-top:14px;min-height:24px;transition:opacity .25s}
 .agel{display:flex;gap:10px;align-items:center;margin-top:14px;font-size:0.8125rem;color:var(--muted)}.agel input{width:20px;height:20px;accent-color:var(--accent)}
 .sk{display:inline-block;padding:5px 13px;border-radius:99px;margin:4px 6px 4px 0;font-size:0.8438rem;font-weight:500;border:1px solid var(--line)}
 .sk.c{background:var(--soft);color:var(--ink-accent);border-color:var(--accent)}.sk.p{border-color:var(--ctl);color:var(--text);border-style:dashed}.sk.n{color:var(--muted)}
@@ -331,7 +398,7 @@ main,.card,.row,.tip,.l-form,h1,h2,h3,.sk,.tag{overflow-wrap:anywhere}
 <div id="bn" class="bn" role="status" aria-live="polite" hidden></div>
 
 <!-- LOGIN -->
-<div id="ld" role="status" aria-live="polite"><div class="lw"><svg class="nsm" viewBox="16 16 210 196" aria-hidden="true"><path class="nsc" pathLength="1" d="M28 192 C 60 194, 80 162, 100 144 C 122 124, 146 136, 170 130"/><path class="nss" d="M172 22 C 176 52, 188 64, 218 68 C 188 72, 176 84, 172 114 C 168 84, 156 72, 126 68 C 156 64, 168 52, 172 22 Z"/></svg><div class="logo ldlogo">NorthStep<i>.</i></div><div class="lb"><i id="lbi"></i></div><p id="lc" class="muted">Finding your bearings…</p></div></div>
+<div id="ld" role="status" aria-live="polite"><div class="lw"><svg class="nsm" viewBox="16 16 210 196" aria-hidden="true"><path class="nsc" pathLength="1" d="M28 192 C 60 194, 80 162, 100 144 C 122 124, 146 136, 170 130"/><path class="nss" d="M172 22 C 176 52, 188 64, 218 68 C 188 72, 176 84, 172 114 C 168 84, 156 72, 126 68 C 156 64, 168 52, 172 22 Z"/></svg><div class="logo ldlogo">NorthStep<i>.</i></div><div class="lb"><i id="lbi"></i></div><p id="ldc" class="muted">Finding your bearings…</p></div></div>
 <button class="thm" id="thm2" type="button" style="position:fixed;top:16px;right:16px;z-index:60"></button>
 <div id="login">
   <div class="l-art"><div class="blob b1"></div><div class="blob b2"></div>
@@ -356,7 +423,7 @@ main,.card,.row,.tip,.l-form,h1,h2,h3,.sk,.tag{overflow-wrap:anywhere}
       <div class="err" id="lerr" role="alert"></div><div id="lok" role="status" style="color:var(--ink-accent);font-size:0.8125rem;margin-top:6px"></div>
       <button class="btn block" id="lbtn" style="margin-top:6px"><span>Sign in</span></button>
       <button type="button" class="btn ghost block" id="guest" style="margin-top:12px">Continue as guest</button>
-      <p class="muted" style="text-align:center;font-size:0.7812rem;margin-top:8px">Try it first. Guest reports stay on this device and are not saved to the cloud.</p>
+      <p class="muted l-note" style="text-align:center;font-size:0.7812rem;margin-top:8px">Try it first. Guest reports stay on this device and are not saved to the cloud.</p>
     </form>
   </div>
 </div>
@@ -364,7 +431,7 @@ main,.card,.row,.tip,.l-form,h1,h2,h3,.sk,.tag{overflow-wrap:anywhere}
 <!-- APP -->
 <div id="app">
   <aside aria-label="Main navigation">
-    <span class="brand" aria-label="NorthStep"><svg class="mk" viewBox="16 16 210 196" aria-hidden="true"><use href="#nsmark"/></svg><span class="logo">NorthStep<i>.</i></span></span>
+    <button class="brand sbt" id="sbt" type="button" aria-expanded="true" aria-label="Close sidebar" title="Close sidebar"><svg class="mk" viewBox="16 16 210 196" aria-hidden="true"><use href="#nsmark"/></svg><span class="logo">NorthStep<i>.</i></span></button>
     <button class="nav" data-v="home"></button>
     <button class="nav" data-v="roadmap"></button>
     <button class="nav" data-v="pivot"></button>
@@ -380,7 +447,7 @@ main,.card,.row,.tip,.l-form,h1,h2,h3,.sk,.tag{overflow-wrap:anywhere}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js" integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O" crossorigin="anonymous"></script>
 <script>
 /* ================= Storage (falls back to memory if blocked) ================= */
-const mem={};let SCOPE='';const GLOBAL=['user','accounts','lock','theme','outbox'];const K=k=>'pb_'+(GLOBAL.includes(k)?'':SCOPE+'_')+k;
+const mem={};let SCOPE='';const GLOBAL=['user','accounts','lock','theme','outbox','sbc'];const K=k=>'pb_'+(GLOBAL.includes(k)?'':SCOPE+'_')+k;
 function weekKey(){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
 function getDays(){const s=LS.get('days',null);if(!s||typeof s!=='object'||Array.isArray(s)||s.wk!==weekKey()||!Array.isArray(s.d)||s.d.length!==7)return [0,0,0,0,0,0,0];return s.d.map(x=>x?1:0)}
 function setDays(d){LS.set('days',{wk:weekKey(),d})}
@@ -449,7 +516,7 @@ const ICON={sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M
 check:'<path d="M5 12l5 5 9-10"/>',lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M18.5 16v4M16.5 18h4"/>',book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5V21h16v-4M9 7h7"/>',devices:'<rect x="2.5" y="5" width="13" height="10" rx="2"/><rect x="18" y="9" width="3.5" height="10" rx="1.5"/><path d="M6 19h6"/>',chart:'<path d="M3 20h18M6 20v-8M12 20V5M18 20v-5"/>',tag:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.2"/>',receipt:'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',print:'<path d="M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="7" y="14" width="10" height="7"/>',external:'<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'};
 const svg=(n,c='')=>`<svg aria-hidden="true" class="${c}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[n]}</svg>`;
 const NAV={home:['Today','home'],roadmap:['Roadmap','route'],pivot:['Pivot','swap'],reports:['Reports','file'],settings:['Settings','gear']};
-$$('.nav').forEach(b=>{const n=NAV[b.dataset.v];if(n)b.innerHTML=svg(n[1])+`<span>${n[0]}</span>`});
+$$('.nav').forEach(b=>{const n=NAV[b.dataset.v];if(n){b.innerHTML=svg(n[1])+`<span>${n[0]}</span>`;b.title=n[0]}});
 
 /* ================= Theme ================= */
 const PRESETS={
@@ -828,13 +895,11 @@ function roadmapReport(m,rep){
    <p style="margin-top:16px" class="muted">${D.day}</p>
    <h3 style="margin-top:22px">Watch-outs for you</h3><div style="margin-top:10px">${(a.blockers||[]).map(b=>`<div class="tip"><b>${b}</b>${BLOCK[b]}</div>`).join('')||'<small>None selected.</small>'}</div></div></div>
  ${pivotCard(a)}<div class="sec rise">Your roadmap</div>
- <div class="card rise" style="padding:18px 22px;margin-bottom:14px"><div class="row" style="padding:0;border:0"><b>Progress</b><div class="grow"><div class="bar" id="pgbar"><i id="pgb" data-w="0"></i></div></div><small id="pgt"></small></div></div>
+ <div class="card rise" id="prog-sec" style="padding:18px 22px;margin-bottom:14px"><div class="row" style="padding:0;border:0"><b>Progress</b><div class="grow"><div class="bar" id="pgbar"><i id="pgb" data-w="0"></i></div></div><small id="pgt"></small></div></div>
  <div id="phases">${ph.map((p,i)=>`<div class="acc rise ${i===0?'open':''}" data-p="${i}"><button aria-expanded="${i===0}" aria-controls="ph-${i}"><span class="num">${i+1}</span><span class="grow"><b>${esc(p.t)}</b><br><small>~${p.w} week${p.w>1?'s':''} · ${p.s.length} steps</small></span>${svg('chev','chev')}</button>
   <div class="in" id="ph-${i}"><div><div class="pad">${p.s.map((s,j)=>`<button class="step ${rep.done[i+'-'+j]?'on':''}" role="checkbox" aria-checked="${!!rep.done[i+'-'+j]}" data-k="${i}-${j}"><span class="sck" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span><span>${esc(s)}</span></button>`).join('')}
   <div class="res">${p.r.map(x=>`<span class="tag n">${esc(x)}</span>`).join('')}</div></div></div></div></div>`).join('')}</div>
- <div class="card rise" style="margin-top:22px"><h3>How we calculated it</h3><small>Transparent by design</small>
-  <div class="math">Score = 100 × Σ (weight × factor)<br>= 100 × (${r.f.map(x=>`${x.w}×${x.v.toFixed(2)}`).join(' + ')})<br>= ${r.raw.toFixed(1)} → <b>${r.score}%</b> (shown on a 0–100 scale, no floor or cap)<br>Indicative range = score ± ${r.margin}. This width is a heuristic based on how many questions you answered, not a statistical interval. It will be replaced once calibration data exists.<br>Timeline = field months × pace(${(r.need/(a.hours||8)).toFixed(2)}) × (1 − 0.35 × momentum ${r.P.toFixed(2)})${a.pivot?` × (1 − pivot credit ${a.pivot.sv.toFixed(2)})`:''} = ${r.weeks} wks</div></div>
- <p class="disc">Illustrative data: benchmarks and demand figures are placeholders, not real statistics.</p></div>`;
+ </div>`;
  const upd=()=>{const d=Object.values(rep.done).filter(Boolean).length,pc=Math.round(d/tot*100);sty('#pgb','width',pc+'%');const pgt=$('#pgt');if(pgt)pgt.textContent=`${d}/${tot} steps · ${pc}%`;setProg($('#pgbar'),pc,'Roadmap progress');
   $$('.acc',m).forEach((acc,i)=>acc.classList.toggle('done',ph[i].s.every((_,j)=>rep.done[i+'-'+j])))};
  setTimeout(upd,60);
@@ -877,22 +942,23 @@ VIEWS.settings=m=>{
   <div class="sline" style="border-top:1px solid var(--line)"><div><b>Text size</b><br><small>Also follows your device’s text size setting</small></div><div class="seg" id="tsz" style="margin:0">${[['Default',1],['Large',1.15],['Larger',1.3]].map(([l,v])=>`<button type="button" data-ts="${v}" class="${theme.ts===v?'on':''}" aria-pressed="${theme.ts===v}">${l}</button>`).join('')}</div></div>
   <div class="sline" style="border-top:1px solid var(--line)"><div><b id="calm-l">Calm mode</b><br><small>Turn off animations and transitions</small></div><button class="tg ${theme.calm?'on':''}" id="calm" type="button" role="switch" aria-checked="${!!theme.calm}" aria-labelledby="calm-l"></button></div></div>
  <div class="card rise" style="margin-top:18px"><h3>About NorthStep</h3><div class="sline"><div><b>How NorthStep stays honest</b><br><small>What the numbers mean, what is still a stand-in, and what is coming.</small></div><button class="btn ghost" id="stt" type="button">Read</button></div><div class="sline" style="border-top:1px solid var(--line)"><div><b>Pre-pay for early access</b><br><small>Hold your place in the closed beta.</small></div><button class="btn ghost" id="stp" type="button">Open</button></div></div>
- <div class="card rise" style="margin-top:18px"><h3>Profile</h3><div class="sline"><div style="display:flex;align-items:center;gap:14px"><span class="av lg" id="sav" aria-hidden="true"></span><div style="min-width:0"><b dir="auto" style="overflow-wrap:anywhere">${esc(user.name)}</b><br><small dir="auto" style="overflow-wrap:anywhere">${esc(user.guest?'Saved on this device':user.email)}</small></div></div><div style="display:flex;gap:8px;flex:none"><button class="btn ghost" id="sph" type="button">Change photo</button><button class="link" id="spr" type="button">Remove</button></div></div><div class="err" id="spe" role="alert"></div><input type="file" id="spf" accept="image/jpeg,image/png,image/webp" hidden></div>
+ <div class="card rise" style="margin-top:18px"><h3>Profile</h3><div class="sline"><div style="display:flex;align-items:center;gap:14px"><button class="avb" id="savb" type="button" aria-label="Upload photo"><span class="av lg" id="sav" aria-hidden="true"></span><span class="avh" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span></button><div style="min-width:0"><b dir="auto" style="overflow-wrap:anywhere">${esc(user.name)}</b><br><small dir="auto" style="overflow-wrap:anywhere">${esc(user.guest?'Saved on this device':user.email)}</small></div></div><div style="display:flex;gap:8px;flex:none"><button class="btn ghost sm" id="sph" data-phl type="button">Upload photo</button><button class="btn ghost sm" id="spr" data-phr type="button" hidden>Remove</button></div></div><div class="err" id="spe" role="alert"></div><input type="file" id="spf" accept="image/jpeg,image/png,image/webp" hidden>
+  <div class="sline" style="border-top:1px solid var(--line)"><div><b>Name</b><br><small>How we greet you</small></div><button class="btn ghost sm" id="sen" type="button">Edit</button></div>
+  ${user.guest?'':'<div class="sline" style="border-top:1px solid var(--line)"><div><b>Password</b><br><small>Use at least 10 characters.</small></div><button class="btn ghost sm" id="spw" type="button">Change</button></div>'}</div>
  <div class="card rise" style="margin-top:18px"><h3>Account</h3><div class="sline"><div><b dir="auto" style="overflow-wrap:anywhere">${esc(user.name)}</b><br><small dir="auto" style="overflow-wrap:anywhere">${esc(user.email)}</small></div><button class="btn ghost" id="so">Sign out</button></div>
-  ${user.guest?'<p style="margin-top:2px"><small>Guest data stays on this device. Create an account to save your answers and progress to the cloud.</small></p>':'<div class="sline"><div><b>Download my data</b><br><small>Everything saved to your account, as a file.</small></div><button class="btn ghost" id="dl" type="button">Download</button></div><div class="err" id="dle" role="alert"></div>'}
+  ${user.guest?'<p style="margin-top:2px"><small>Guest data stays on this device. Create an account to save your answers and progress to the cloud.</small></p>':'<div class="sline"><div><b>Download my data</b><br><small>Everything saved to your account, as a Word or PDF file.</small></div><div style="display:flex;gap:8px;flex:none"><button class="btn ghost sm" id="dl" type="button">Word (.docx)</button><button class="btn ghost sm" id="dlp" type="button">PDF</button></div></div><div class="err" id="dle" role="alert"></div>'}
   ${user.guest?'<div class="sline" style="border-top:1px solid var(--line);margin-top:10px"><div><b>Reset demo data</b><br><small>Restore the sample reports</small></div><button class="btn ghost" id="rs">Reset</button></div>':''}
   <div class="sline" style="border-top:1px solid var(--line)"><div><b>Delete my account and data</b><br><small>${user.guest?'Removes everything saved for this guest on this device':'Permanently deletes your account and everything saved to it, and clears this device'}. You can sign up again afterwards.</small></div><button class="btn ghost" id="dz">Delete</button></div>
-  <div class="tip" id="dzp" hidden style="margin-top:12px"><b>This can’t be undone</b>Type DELETE to confirm.<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center"><input class="input" id="dzi" aria-label="Type DELETE to confirm" autocomplete="off" style="max-width:200px"><button class="btn" id="dzg" disabled>Delete everything</button><button class="link" id="dzc" type="button">Cancel</button></div><div class="err" id="dze" role="alert"></div></div></div></div>`;
+</div></div>`;
  const mark=()=>$$('.preset',m).forEach(b=>{const on=Object.keys(PRESETS[b.dataset.p]).every(k=>PRESETS[b.dataset.p][k]===theme[k]);b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on))});mark();
  $$('.preset',m).forEach(b=>b.onclick=()=>{Object.assign(theme,PRESETS[b.dataset.p]);applyTheme();$$('[data-k]',m).forEach(i=>{i.value=theme[i.dataset.k];$('#h-'+i.dataset.k).textContent=theme[i.dataset.k]});mark()});
  $$('[data-k]',m).forEach(i=>i.oninput=()=>{theme[i.dataset.k]=i.value;$('#h-'+i.dataset.k).textContent=i.value;applyTheme();mark()});
  $('#rad').oninput=e=>{theme.radius=+e.target.value;applyTheme()};
  $('#calm').onclick=e=>{theme.calm=!theme.calm;e.currentTarget.classList.toggle('on',theme.calm);e.currentTarget.setAttribute('aria-checked',String(theme.calm));applyTheme()};
  $$('#tsz button',m).forEach(b=>b.onclick=()=>{theme.ts=+b.dataset.ts;applyTheme();$$('#tsz button',m).forEach(x=>{const on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-pressed',String(on))})});
- paintAv($('#sav'));bindPhoto($('#sph'),$('#spr'),$('#spf'),$('#spe'));
+ paintAv($('#sav'));bindPhoto($('#sph'),$('#spr'),$('#spf'),$('#spe'));$('#savb').onclick=()=>$('#sph').click();$('#sen').onclick=askName;{const spw=$('#spw');if(spw)spw.onclick=askPassword}renderMe();
  $('#so').onclick=()=>logout();$('#stt').onclick=()=>go('trust');$('#stp').onclick=()=>go('pay');const rsb=$('#rs');if(rsb)rsb.onclick=()=>{LS.del('reports');go('settings')};
- $('#dz').onclick=()=>{$('#dzp').hidden=false;$('#dzi').focus()};$('#dzc').onclick=()=>{$('#dzp').hidden=true;$('#dzi').value='';$('#dzg').disabled=true};
- $('#dzi').oninput=e=>{$('#dzg').disabled=e.target.value.trim().toUpperCase()!=='DELETE'};$('#dzg').onclick=()=>{if(!$('#dzg').disabled)wipeMine()};const dl=$('#dl');if(dl)dl.onclick=downloadMine;
+ $('#dz').onclick=askDelete;{const dl=$('#dl');if(dl)dl.onclick=()=>downloadMine('docx');const dp=$('#dlp');if(dp)dp.onclick=()=>downloadMine('pdf')}
 };
 
 
@@ -977,7 +1043,7 @@ VIEWS.trust=m=>{
  <div class="sec">Path to launch</div><div class="card rise">${tl.map(x=>`<div class="row"><b style="min-width:150px">${x[0]}</b><span class="grow muted">${x[1]}</span></div>`).join('')}</div></div>`;
 };
 /* ================= Loader ================= */
-(()=>{const c=['Finding your bearings…','Charting your first steps…','Matching resources to your budget…','Your path is ready.'],e=$('#lc');let i=0;
+(()=>{const c=['Finding your bearings…','Charting your first steps…','Matching resources to your budget…','Your path is ready.'],e=$('#ldc');let i=0;
  requestAnimationFrame(()=>requestAnimationFrame(()=>sty('#lbi','width','100%')));
  const t=setInterval(()=>{if(++i<c.length){if(e){e.style.opacity=0;setTimeout(()=>{e.textContent=c[i];e.style.opacity=1},220)}}},800);
  setTimeout(()=>{clearInterval(t);const ld=$('#ld');if(ld){ld.classList.add('out');setTimeout(()=>ld.remove(),800)}},3300)})();
@@ -1068,11 +1134,12 @@ function nextStep(rep){const ph=buildPhases(rep.a,compute(rep.a));for(let i=0;i<
 VIEWS.home=m=>{
  const rm=reports().filter(r=>r.type==='roadmap'),rep=rm[0],user=me(),days=getDays(),h=new Date().getHours(),g=h<12?'Good morning':h<18?'Good afternoon':'Good evening';
  const ns=rep&&nextStep(rep),prog=rep?progressOf(rep):0,r=rep&&compute(rep.a),mg=r&&r.margin!=null?r.margin:10,lo=rep?Math.max(0,rep.score-mg):0,hi=rep?Math.min(100,rep.score+mg):0;
+ const phs=rep?buildPhases(rep.a,r):[],upNext=ns?ns.ph.s.slice(ns.j+1,ns.j+3):[],nextPh=ns?phs[ns.i+1]:null;
  const pst=rep?buildPhases(rep.a,r).map((p,i)=>({t:p.t,w:p.w,n:p.s.length,d:p.s.filter((_,j)=>(rep.done||{})[i+'-'+j]).length})):[];
  const totS=pst.reduce((q,p)=>q+p.n,0),doneS=pst.reduce((q,p)=>q+p.d,0),wkLeft=Math.ceil(pst.reduce((q,p)=>q+p.w*(p.n?1-p.d/p.n:0),0)),pDays=days.filter(Boolean).length;
- const progCard=rep?`<div class="card rise"><div class="prog">${gaugeHTML(prog,104,'Progress '+prog+' percent')}<div class="pk"><small>Overall progress</small><b>${doneS} of ${totS} steps done</b><small>${ns?`Now in phase ${ns.i+1} of ${ns.n}`:'Every phase complete'}</small></div></div>
+ const progCard=rep?`<div class="card lift rise" role="link" tabindex="0" data-prog aria-label="Open your progress in the roadmap"><div class="prog">${gaugeHTML(prog,104,'Progress '+prog+' percent')}<div class="pk"><small>Overall progress</small><b>${doneS} of ${totS} steps done</b><small>${ns?`Now in phase ${ns.i+1} of ${ns.n}`:'Every phase complete'}</small></div></div>
   <div class="plist">${pst.map((p,i)=>{const pc=p.n?Math.round(p.d/p.n*100):0;return `<div class="pph${ns&&ns.i===i?' cur':''}"><div class="pht"><span title="${esc(p.t)}">${esc(p.t)}</span><small>${p.d}/${p.n}</small></div><div class="bar" role="progressbar" aria-label="${esc(p.t)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pc}"><i data-w="${pc}"></i></div></div>`}).join('')}</div>
-  <div class="pft"><span>${wkLeft?`About ${wkLeft} week${wkLeft>1?'s':''} of the plan left`:'You’ve finished the plan'}</span><span id="pdc">${pDays} of 5 practice days this week</span></div></div>`
+  <div class="pft"><span>${wkLeft?`About ${wkLeft} week${wkLeft>1?'s':''} of the plan left`:'You’ve finished the plan'}</span><span id="pdc">${pDays} of 5 practice days this week</span></div><div class="pcue">See your full progress ${svg('arrow')}</div></div>`
   :`<div class="card rise"><small>Overall progress</small><h3 style="margin:8px 0 6px">Your progress will show up here</h3><p class="muted">After you build a roadmap you’ll see steps done, the phase you’re in, and how much of the plan is left.</p><div class="pft" style="margin-top:18px"><span>Steps done: –</span><span>Phase: –</span><span>Weeks left: –</span></div></div>`;
  const paid=cleanPay(LS.get('pay',null)),hid=+LS.get('payHide',0)||0,showPay=!paid&&Date.now()-hid>7*864e5;
  const payBar=paid?`<div class="card rise" style="padding:14px 20px;margin-bottom:18px"><div class="rrow"><span class="grow">Closed beta pre-pay: <b>${PSTAT[paid.status]||'Recorded'}</b> · ${esc(paid.id)}</span><button class="link" data-go="pay" type="button">View</button></div></div>`
@@ -1080,13 +1147,17 @@ VIEWS.home=m=>{
  m.innerHTML=`<div class="wrap"><div class="head rise"><h1>${g}, ${esc(user.name.split(' ')[0])}.</h1><p>${rep?`You’re ${prog}% through ${DOMAINS[rep.a.domain].name}.`:'Start with a roadmap or the niche finder.'} <span class="tag dm">Demo data</span></p></div>
  <div id="ckp"></div>
  ${payBar}
- <div class="grid g21"><div class="card rise">${ns?`<small>Your next step · ${esc(ns.ph.t)} (phase ${ns.i+1} of ${ns.n})</small><h2 style="margin:8px 0 18px;font-size:1.5rem">${esc(ns.txt)}</h2><button class="btn" id="nd">Mark done</button> <button class="link" data-go="roadmap" type="button">View roadmap</button>`:rep?'<h2>Every step is done.</h2><p class="muted" style="margin:8px 0 16px">Re-check your fit or try a pivot.</p><button class="btn" data-go="pivot">Explore a pivot</button>':'<h2>No roadmap yet.</h2><p class="muted" style="margin:8px 0 16px">Answer a few questions and we’ll plan your first phase.</p><button class="btn" data-go="builder">Build a roadmap</button>'}</div>
+ <div class="grid g21"><div class="card rise">${ns?`<small>Your next step · ${esc(ns.ph.t)} (phase ${ns.i+1} of ${ns.n})</small><h2 style="margin:8px 0 20px;font-size:1.5rem">${esc(ns.txt)}</h2><div class="nsa"><button class="btn" id="nd">Mark done</button><button class="link" data-go="roadmap" type="button">View roadmap</button></div>
+ <div class="nsx"><div><h4>Where you are</h4><p>Step ${ns.j+1} of ${ns.ph.s.length} in this phase, about ${ns.ph.w} week${ns.ph.w>1?'s':''} at ${rep.a.hours||8} h/week. Marking it done moves your progress from ${prog}% to ${Math.round((doneS+1)/totS*100)}%.</p></div>
+  ${upNext.length?`<div><h4>Up next</h4><ol class="nsl">${upNext.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></div>`:`<div><h4>Up next</h4><p>${nextPh?'This is the last step of the phase. Then: '+esc(nextPh.t)+'.':'This is the last step of your roadmap.'}</p></div>`}
+  ${ns.ph.r&&ns.ph.r.length?`<div><h4>Resources for this phase</h4><div class="res">${ns.ph.r.map(x=>`<span class="tag n">${esc(x)}</span>`).join('')}</div></div>`:''}</div>`:rep?'<h2>Every step is done.</h2><p class="muted" style="margin:8px 0 16px">Re-check your fit or try a pivot.</p><button class="btn" data-go="pivot">Explore a pivot</button>':'<h2>No roadmap yet.</h2><p class="muted" style="margin:8px 0 16px">Answer a few questions and we’ll plan your first phase.</p><button class="btn" data-go="builder">Build a roadmap</button>'}</div>
  ${progCard}</div>
  <div class="card lift rise" data-go="pivot" role="button" tabindex="0" style="margin-top:18px"><div class="rrow"><div class="ico" style="margin:0">${svg('swap')}</div><div class="grow"><h3 style="margin:0 0 2px">Changing direction?</h3><p class="muted">Pivot maps what you’ve already learned onto a new path, so none of that time is wasted.</p></div><span class="link" aria-hidden="true">See what carries over ${svg('arrow')}</span></div></div>
  <div class="grid g2" style="margin-top:18px"><div class="card rise"><h3>This week</h3><p class="muted" id="dc" style="margin-bottom:12px">${days.filter(Boolean).length} of 5 practice days</p><div class="days">${['M','T','W','T','F','S','S'].map((d,i)=>`<button data-d="${i}" aria-pressed="${!!days[i]}" class="${days[i]?'on':''}">${d}</button>`).join('')}</div></div>
  <div class="card rise"><h3>Fit indicator</h3>${rep?`<div class="bar" style="margin:14px 0 8px;position:relative"><i style="position:absolute;left:${lo}%;width:${hi-lo}%"></i></div><b>Indicative range ${lo} to ${hi}</b><p style="margin-top:6px"><span class="tag n">Preview, not yet calibrated</span></p><p style="margin-top:8px"><button class="link" data-go="trust" type="button">What does this mean?</button></p>`:'<p class="muted">Appears after your first roadmap.</p>'}</div></div>
  <div class="grid g2" style="margin-top:18px">${[['discover','compass','Niche finder','Not sure of your field? Check your result clarity'],['reports','file','Reports','Print or copy a summary']].map(x=>`<div class="card lift rise" data-go="${x[0]}" role="button" tabindex="0"><div class="ico">${svg(x[1])}</div><h3>${x[2]}</h3><p class="muted">${x[3]}</p></div>`).join('')}</div></div>`;
  $$('[data-go]',m).forEach(e=>e.onclick=()=>go(e.dataset.go));
+ const pcd=$('[data-prog]',m);if(pcd){pcd.onclick=jumpProg;pcd.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();jumpProg()}}}
  const px=$('#phx');if(px)px.onclick=()=>{LS.set('payHide',Date.now());go('home',null,'replace')};
  const nd=$('#nd');if(nd)nd.onclick=()=>{rep.done=rep.done||{};rep.done[ns.i+'-'+ns.j]=1;cloudStep(rep,ns.i+'-'+ns.j,true);saveReports(reports().map(x=>x.id===rep.id?rep:x));go('home')};
  $$('[data-d]',m).forEach(b=>b.onclick=()=>{const i=+b.dataset.d;days[i]=days[i]?0:1;setDays(days);b.classList.toggle('on',!!days[i]);b.setAttribute('aria-pressed',String(!!days[i]));$('#dc').textContent=`${days.filter(Boolean).length} of 5 practice days`;const pd=$('#pdc');if(pd)pd.textContent=`${days.filter(Boolean).length} of 5 practice days this week`});
@@ -1183,9 +1254,11 @@ VIEWS.reports=m=>{
  $$('[data-copy]',m).forEach(e=>e.onclick=ev=>{ev.stopPropagation();const r=all.find(x=>x.id===e.dataset.copy);copyTxt(r?summary(r):'').then(ok=>{e.textContent=ok?'Copied':'Unavailable';setTimeout(()=>e.textContent='Copy',1800)})});
  $$('#rf button').forEach(b=>b.onclick=()=>{RF=b.dataset.f;VIEWS.reports(m);reveal(m)});
 };
+function CALC_HTML(rep){const a=rep.a||{},r=compute(a);
+ return `<details class="card rise calc" style="margin-top:18px"><summary><span><b>How we calculated it</b><small>Transparent by design</small></span>${svg('chev','chev')}</summary><div class="cin"><div class="math">Score = 100 × Σ (weight × factor)<br>= 100 × (${r.f.map(x=>`${x.w}×${x.v.toFixed(2)}`).join(' + ')})<br>= ${r.raw.toFixed(1)} → <b>${r.score}%</b> (shown on a 0–100 scale, no floor or cap)<br>Indicative range = score ± ${r.margin}. This width is a heuristic based on how many questions you answered, not a statistical interval. It will be replaced once calibration data exists.<br>Timeline = field months × pace(${(r.need/(a.hours||8)).toFixed(2)}) × (1 − 0.35 × momentum ${r.P.toFixed(2)})${a.pivot?` × (1 − pivot credit ${a.pivot.sv.toFixed(2)})`:''} = ${r.weeks} wks</div><p class="disc">Illustrative data: benchmarks and demand figures are placeholders, not real statistics.</p></div></details>`}
 const _rv=VIEWS.report;
 VIEWS.report=(m,id)=>{_rv(m,id);const rep=reports().find(r=>r.id===id),w=$('.wrap',m);$$('[data-trust]',m).forEach(b=>b.onclick=()=>go('trust'));if(!w)return;if(!rep){w.insertAdjacentHTML('afterbegin','<div class="tip" role="status"><b>We couldn’t find that report</b>It may have been deleted, or it was saved on another device.</div>');return}const a=rep.a||{},dq=[...(a.dq1||[]),a.dq2].filter(Boolean);
- w.insertAdjacentHTML('beforeend',`<div class="card rise noprint" style="margin-top:18px"><h3>Take this with you</h3><div style="margin-top:12px"><button class="btn" id="rp">${svg('print')} Print or save as PDF</button> <button class="btn ghost" id="rc">${svg('copy')} Copy summary</button> <button class="btn ghost" disabled>Share link · coming soon</button></div></div>${dq.length?`<div class="card rise" style="margin-top:18px"><h3>Your field-specific answers</h3><p style="margin-top:8px">${dq.map(x=>`<span class="sk c">${esc(x)}</span>`).join('')}</p></div>`:''}`);
+ w.insertAdjacentHTML('beforeend',`<div class="card rise noprint" style="margin-top:18px"><h3>Take this with you</h3><div class="tw"><button class="btn" id="rp">${svg('print')} Print or save as PDF</button> <button class="btn ghost" id="rc">${svg('copy')} Copy summary</button> <button class="btn ghost" disabled>Share link · coming soon</button></div></div>${dq.length?`<div class="card rise" style="margin-top:18px"><h3>Your field-specific answers</h3><p style="margin-top:8px">${dq.map(x=>`<span class="sk c">${esc(x)}</span>`).join('')}</p></div>`:''}${rep.type==='roadmap'?CALC_HTML(rep):''}`);
  $('#rp').onclick=()=>window.print();$('#rc').onclick=e=>{const b=e.currentTarget,h=b.innerHTML;copyTxt(summary(rep)).then(ok=>{b.textContent=ok?'Copied':'Unavailable';setTimeout(()=>b.innerHTML=h,1800)})}};
 
 /* ================= Auth + cloud saving =================
@@ -1357,7 +1430,8 @@ function paintAv(el){if(!el)return;const u=me(),s=avatarSrc();el.textContent='';
  if(s){const i=new Image();i.alt='';i.src=s;el.appendChild(i)}else el.textContent=firstCh(u.name).toUpperCase()}
 function renderMe(){const u=me(),b=$('#meb');if(!$('#av'))return;paintAv($('#av'));$('#mn').textContent=u.name;$('#me').textContent=u.guest?'Saved on this device':u.email;
  if(b){b.title=u.name+(u.guest?'':' · '+u.email);b.setAttribute('aria-label','Your profile: '+u.name)}
- paintAv($('#sav'));paintAv($('#pav'))}
+ paintAv($('#sav'));paintAv($('#pavi'));const has=!!avatarSrc();
+ $$('[data-phl]').forEach(e=>e.textContent=has?'Change photo':'Upload photo');$$('[data-phr]').forEach(e=>e.hidden=!has);$$('.avb').forEach(e=>e.setAttribute('aria-label',has?'Change photo':'Upload photo'));fitMe()}
 function avatarFrom(file){return new Promise((res,rej)=>{
  if(!file||!/^image\/(jpeg|png|webp)$/.test(file.type))return rej('Choose a JPG, PNG or WebP picture.');
  if(file.size>8*1024*1024)return rej('That picture is too big. Choose one under 8 MB.');
@@ -1379,15 +1453,138 @@ function ppKey(e){if(e.key==='Escape'){closePP();const b=$('#meb');if(b)b.focus(
 function closePP(){const p=$('#pnl');if(p)p.remove();const b=$('#meb');if(b)b.setAttribute('aria-expanded','false');document.removeEventListener('pointerdown',ppOut,true);document.removeEventListener('keydown',ppKey,true)}
 function openPP(){closePP();const u=me(),b=$('#meb'),rm=reports(),rd=rm.filter(r=>r.type==='roadmap'),steps=rd.reduce((q,r)=>q+Object.keys(r.done||{}).filter(k=>r.done[k]).length,0);
  const p=document.createElement('div');p.id='pnl';p.className='pp';p.setAttribute('role','dialog');p.setAttribute('aria-label','Your profile');
- p.innerHTML=`<div class="ppt"><span class="av lg" id="pav" aria-hidden="true"></span><span class="mt"><b dir="auto">${esc(u.name)}</b><small dir="auto">${esc(u.guest?'Guest on this device':u.email)}</small></span></div>
+ p.innerHTML=`<div class="ppt"><button class="avb" id="pav" type="button" aria-label="Upload photo"><span class="av lg" id="pavi" aria-hidden="true"></span><span class="avh" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span></button><span class="mt"><b dir="auto">${esc(u.name)}</b><small dir="auto" id="ppem">${esc(u.guest?'Guest on this device':u.email)}</small></span></div>
  <dl class="ppd"><div><dt>Account</dt><dd>${u.guest?'Guest':'Signed in'}</dd></div><div><dt>Saving</dt><dd id="pps">${esc(syncText())}</dd></div><div><dt>Roadmaps</dt><dd>${rd.length}</dd></div><div><dt>Steps done</dt><dd>${steps}</dd></div></dl>
- <div class="ppa"><button class="btn ghost" id="ppc" type="button">Change photo</button><button class="link" id="ppr" type="button">Remove photo</button></div><div class="pperr" id="ppe" role="alert"></div><input type="file" id="ppf" accept="image/jpeg,image/png,image/webp" hidden>
- <div class="ppa"><button class="link" id="pps2" type="button">Settings</button><button class="link" id="ppo" type="button">Sign out</button></div>`;
- document.body.appendChild(p);paintAv($('#pav'));
+ <div class="ppa"><button class="btn ghost sm" id="ppc" data-phl type="button">Upload photo</button><button class="btn ghost sm" id="ppr" data-phr type="button" hidden>Remove</button></div><div class="pperr" id="ppe" role="alert"></div><input type="file" id="ppf" accept="image/jpeg,image/png,image/webp" hidden>
+ <div class="ppa split" style="margin-top:14px"><button class="link" id="pps2" type="button">Settings</button><button class="link" id="ppo" type="button">Sign out</button></div>`;
+ document.body.appendChild(p);renderMe();$('#pav').onclick=()=>$('#ppc').click();
  const r=b.getBoundingClientRect();p.style.left=Math.max(12,Math.min(r.left,innerWidth-p.offsetWidth-12))+'px';p.style.bottom=(innerHeight-r.top+10)+'px';
  b.setAttribute('aria-expanded','true');bindPhoto($('#ppc'),$('#ppr'),$('#ppf'),$('#ppe'));
  $('#pps2').onclick=()=>{closePP();go('settings')};$('#ppo').onclick=()=>{closePP();logout()};
  document.addEventListener('pointerdown',ppOut,true);document.addEventListener('keydown',ppKey,true);$('#ppc').focus()}
+
+/* ================= Themed pop-ups, account changes, export, sidebar ================= */
+function notice(t){let n=$('#ntc');if(!n){n=document.createElement('div');n.id='ntc';n.setAttribute('role','status');document.body.appendChild(n)}n.textContent=t;n.classList.add('on');clearTimeout(notice.t);notice.t=setTimeout(()=>n.classList.remove('on'),3500)}
+function openModal(o){closeModal();const prev=document.activeElement,s=document.createElement('div');s.className='mdl-scrim';s.id='mdl';
+ s.innerHTML=`<div class="mdl" role="dialog" aria-modal="true" aria-labelledby="mdlt"><h3 id="mdlt">${esc(o.title)}</h3>${o.body}<div class="mdl-act">${o.actions}</div></div>`;
+ document.body.appendChild(s);s._prev=prev;const ap=$('#app');if(ap)ap.inert=true;
+ $$('[data-x]',s).forEach(b=>b.onclick=closeModal);
+ s.addEventListener('mousedown',e=>{if(e.target===s)closeModal()});
+ s._esc=e=>{if(e.key==='Escape'){e.preventDefault();closeModal()}};document.addEventListener('keydown',s._esc);
+ s.addEventListener('keydown',e=>{
+  if(e.key==='Tab'){const f=[...s.querySelectorAll('button:not([disabled]),input:not([disabled]),select')].filter(x=>x.offsetParent!==null);if(!f.length)return;const a=f[0],b=f[f.length-1];
+   if(e.shiftKey&&document.activeElement===a){e.preventDefault();b.focus()}else if(!e.shiftKey&&document.activeElement===b){e.preventDefault();a.focus()}}});
+ $$('[data-show]',s).forEach(b=>b.onclick=()=>{const i=$('#'+b.dataset.show,s),on=i.type==='password';i.type=on?'text':'password';b.textContent=on?'Hide':'Show';b.setAttribute('aria-pressed',String(on))});
+ const f=s.querySelector('[data-first]')||s.querySelector('input,button');if(f)f.focus();return s}
+function closeModal(){const s=$('#mdl');if(!s)return;const p=s._prev;document.removeEventListener('keydown',s._esc);s.remove();const ap=$('#app');if(ap)ap.inert=false;if(p&&p.focus&&document.contains(p))p.focus()}
+const pwField=(id,label,ac)=>`<div class="field"><label for="${id}">${label}</label><div class="pwrow"><input class="input" id="${id}" type="password" autocomplete="${ac}" maxlength="128"><button type="button" class="link" data-show="${id}" aria-pressed="false" aria-label="Show or hide ${label.toLowerCase()}">Show</button></div></div>`;
+function mdErr(t){const e=$('#mdl .err');if(e)e.textContent=t||'';const m=$('#mdl .mdl');
+ if(m&&t){m.classList.remove('shake');void m.offsetWidth;m.classList.add('shake');if(!m.contains(document.activeElement)){const i=m.querySelector('input');if(i)i.focus()}}}
+/* checks a password on a separate throw-away connection, so the person stays signed in */
+async function verifyPw(pw){const u=me();if(!CLOUD||!window.supabase)return 'net';
+ try{const c=window.supabase.createClient(CLOUD_CFG.url,CLOUD_CFG.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false,storageKey:'ns-verify'}});
+  const r=await c.auth.signInWithPassword({email:u.email,password:pw});
+  if(r.error)return r.error.status===429?'rate':(r.error.status===400||/invalid|credential/i.test(r.error.message||''))?'bad':'net';
+  return 'ok'}catch(e){return 'net'}}
+const pwMsg={bad:'That password doesn’t match. Try again.',rate:'Too many tries. Wait a minute and try again.',net:'We couldn’t check your password right now. Check your connection and try again.'};
+function askDelete(){const u=me();
+ if(u.guest){const s=openModal({title:'Delete guest data?',body:'<p class="muted">This removes everything saved for this guest on this device. It can’t be undone.</p><div class="err" id="dze" role="alert"></div>',actions:'<button class="btn ghost" data-x type="button">Cancel</button><button class="btn danger" id="mdg" type="button">Delete data</button>'});
+  $('#mdg',s).onclick=()=>wipeMine();return}
+ const s=openModal({title:'Delete your account?',body:`<p class="muted">This permanently deletes your account and everything saved to it, and clears this device. You can sign up again afterwards. Enter your password to confirm.</p>${pwField('mdp','Password','current-password')}<div class="err" id="dze" role="alert"></div>`,actions:'<button class="btn ghost" data-x type="button">Cancel</button><button class="btn danger" id="mdg" type="button" disabled>Delete everything</button>'});
+ const inp=$('#mdp',s),go_=$('#mdg',s);let busy=false;inp.setAttribute('data-first','');inp.focus();
+ inp.oninput=()=>{go_.disabled=!inp.value};
+ const run=async()=>{if(busy||!inp.value)return;busy=true;go_.disabled=true;go_.textContent='Checking…';$('#dze',s).textContent='';
+  const v=await verifyPw(inp.value);
+  if(v!=='ok'){busy=false;go_.textContent='Delete everything';go_.disabled=!inp.value;mdErr(pwMsg[v]);return}
+  go_.textContent='Deleting…';await wipeMine();   /* on success this signs out and closes the pop-up */
+  busy=false;if($('#mdg')){go_.textContent='Delete everything';go_.disabled=!inp.value}};
+ go_.onclick=run;inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();run()}}}
+function askName(){const u=me(),s=openModal({title:'Change your name',body:`<div class="field"><label for="mdn">Name</label><input class="input" id="mdn" maxlength="40" dir="auto" autocomplete="name" value="${esc(u.name==='Guest'&&u.guest?'':u.name)}" data-first></div><div class="err" role="alert"></div>`,actions:'<button class="btn ghost" data-x type="button">Cancel</button><button class="btn" id="mds" type="button">Save</button>'});
+ const inp=$('#mdn',s),b=$('#mds',s);let busy=false;
+ const run=async()=>{if(busy)return;const v=cleanText(inp.value,40).trim();if(!v)return mdErr('Enter a name.');
+  if(v===u.name){closeModal();return}
+  busy=true;b.disabled=true;b.textContent='Saving…';
+  if(!u.guest){try{const r=await CLOUD.auth.updateUser({data:{name:v}});if(r.error)throw r.error}catch(e){busy=false;b.disabled=false;b.textContent='Save';return mdErr('We couldn’t save that right now. Check your connection and try again.')}}
+  LS.set('user',cleanUser({...me(),name:v}));renderMe();closeModal();if(state.view==='settings'||state.view==='home')go(state.view,state.param,'replace');notice('Name updated.')};
+ b.onclick=run;inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();run()}}}
+function askPassword(){const s=openModal({title:'Change your password',body:`${pwField('mdo','Current password','current-password')}${pwField('mdw','New password (at least 10 characters)','new-password')}${pwField('mdc','Repeat new password','new-password')}<div class="err" role="alert"></div>`,actions:'<button class="btn ghost" data-x type="button">Cancel</button><button class="btn" id="mds" type="button">Change password</button>'});
+ $('#mdo',s).setAttribute('data-first','');$('#mdo',s).focus();const b=$('#mds',s);let busy=false;
+ const run=async()=>{if(busy)return;const o=$('#mdo',s).value,n=$('#mdw',s).value,c=$('#mdc',s).value;
+  if(!o)return mdErr('Enter your current password.');if(n.length<10)return mdErr('Your new password needs at least 10 characters.');if(!n.trim())return mdErr('Your password can’t be only spaces.');
+  if(n===o)return mdErr('Choose a password you haven’t used here before.');if(n!==c)return mdErr('The two new passwords don’t match.');
+  busy=true;b.disabled=true;b.textContent='Checking…';
+  const v=await verifyPw(o);if(v!=='ok'){busy=false;b.disabled=false;b.textContent='Change password';return mdErr(v==='bad'?'Your current password doesn’t match.':pwMsg[v])}
+  try{const r=await CLOUD.auth.updateUser({password:n});if(r.error)throw r.error}catch(e){busy=false;b.disabled=false;b.textContent='Change password';return mdErr(authMsg(e)||'We couldn’t change your password right now. Try again in a moment.')}
+  closeModal();notice('Password changed.')};
+ b.onclick=run;s.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'){e.preventDefault();run()}})}
+
+/* ---- Download my data as a Word or PDF file ---- */
+const crcT=(()=>{const t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+const crc32=b=>{let c=0xFFFFFFFF;for(let i=0;i<b.length;i++)c=crcT[(c^b[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0};
+function zipStore(files){const enc=new TextEncoder(),d=new Date(),dt=(d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1),dd=((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate();let off=0;const parts=[],cd=[];
+ files.forEach(f=>{const n=enc.encode(f.name),data=enc.encode(f.text),c=crc32(data),h=new DataView(new ArrayBuffer(30));
+  h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(10,dt,true);h.setUint16(12,dd,true);h.setUint32(14,c,true);h.setUint32(18,data.length,true);h.setUint32(22,data.length,true);h.setUint16(26,n.length,true);
+  parts.push(new Uint8Array(h.buffer),n,data);
+  const e=new DataView(new ArrayBuffer(46));e.setUint32(0,0x02014b50,true);e.setUint16(4,20,true);e.setUint16(6,20,true);e.setUint16(8,0x0800,true);e.setUint16(12,dt,true);e.setUint16(14,dd,true);e.setUint32(16,c,true);e.setUint32(20,data.length,true);e.setUint32(24,data.length,true);e.setUint16(28,n.length,true);e.setUint32(42,off,true);
+  cd.push(new Uint8Array(e.buffer),n);off+=30+n.length+data.length});
+ const cl=cd.reduce((s,x)=>s+x.length,0),en=new DataView(new ArrayBuffer(22));en.setUint32(0,0x06054b50,true);en.setUint16(8,files.length,true);en.setUint16(10,files.length,true);en.setUint32(12,cl,true);en.setUint32(16,off,true);
+ return new Blob([...parts,...cd,new Uint8Array(en.buffer)],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'})}
+const xe=s=>String(s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F￾￿]/g,'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function exportModel(d){d=d&&typeof d==='object'?d:{};const u=me(),M=[],kv=(k,v)=>{if(v!==null&&v!==undefined&&v!=='')M.push(['p',k+': '+(typeof v==='object'?JSON.stringify(v):String(v))])};
+ M.push(['title','Your NorthStep data']);M.push(['p','Exported on '+new Date().toLocaleString()+' for '+u.email]);
+ M.push(['h','Account']);kv('Name',u.name);kv('Email',u.email);if(d.profile&&typeof d.profile==='object')Object.keys(d.profile).forEach(k=>kv(k.replace(/_/g,' '),d.profile[k]));
+ const st=d.saved_state?normState(d.saved_state):null;
+ if(st){M.push(['h','Your roadmaps and progress']);if(!st.reports.length)M.push(['p','No reports saved.']);
+  st.reports.forEach(r=>{M.push(['h2',r.title]);kv('Type',r.type==='roadmap'?'Roadmap':'Niche analysis');kv('Created',fmt(r.created));kv(r.type==='roadmap'?'Fit indicator':'Result clarity',r.score+'%');
+   if(r.type==='roadmap'){let ph=[];try{ph=buildPhases(r.a,compute(r.a))}catch(e){}ph.forEach((p,i)=>{M.push(['p',`Phase ${i+1}: ${p.t}`]);p.s.forEach((s,j)=>M.push(['p',`   ${(r.done||{})[i+'-'+j]?'[done]':'[ ]'} ${s}`]))});
+    M.push(['p','Your answers: '+JSON.stringify(r.a)])}});
+  if(st.pivots.length){M.push(['h','Pivots']);st.pivots.forEach(p=>M.push(['p',`${new Date(p.at).toLocaleDateString()}: ${p.f} to ${p.t}`]))}}
+ [['answers','Saved answers'],['scores','Scores'],['checkins','Check-ins']].forEach(([k,t])=>{if(Array.isArray(d[k])&&d[k].length){M.push(['h',t+' ('+d[k].length+')']);d[k].forEach(x=>M.push(['p',JSON.stringify(x)]))}});
+ M.push(['h','Progress history']);M.push(['p',(Array.isArray(d.step_events)?d.step_events.length:0)+' step events and '+(Array.isArray(d.roadmaps)?d.roadmaps.length:0)+' roadmap records are included in the complete record below.']);
+ M.push(['h','Complete record']);M.push(['p','Everything we hold for your account, exactly as stored.']);M.push(['mono',JSON.stringify(d,null,2)]);return M}
+function buildDocx(M){const wp=(t,o={})=>`<w:p><w:pPr>${o.st?`<w:pStyle w:val="${o.st}"/>`:''}</w:pPr>${String(t).split('\n').map((ln,i)=>`<w:r>${o.mono?'<w:rPr><w:rFonts w:ascii="Courier New" w:hAnsi="Courier New" w:cs="Courier New"/><w:sz w:val="16"/></w:rPr>':''}${i?'<w:br/>':''}<w:t xml:space="preserve">${xe(ln)}</w:t></w:r>`).join('')}</w:p>`;
+ const body=M.map(([k,t])=>k==='title'?wp(t,{st:'Title'}):k==='h'?wp(t,{st:'Heading1'}):k==='h2'?wp(t,{st:'Heading2'}):k==='mono'?wp(t,{mono:1}):wp(t)).join('');
+ const X='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',W='xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"';
+ const sty=(id,name,sz,b)=>`<w:style w:type="paragraph" w:styleId="${id}"><w:name w:val="${name}"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:pPr><w:spacing w:before="${id==='Title'?0:280}" w:after="120"/></w:pPr><w:rPr>${b?'<w:b/>':''}<w:sz w:val="${sz}"/></w:rPr></w:style>`;
+ return zipStore([
+  {name:'[Content_Types].xml',text:X+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>'},
+  {name:'_rels/.rels',text:X+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>'},
+  {name:'word/_rels/document.xml.rels',text:X+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>'},
+  {name:'word/styles.xml',text:X+`<w:styles ${W}><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/><w:sz w:val="22"/></w:rPr></w:rPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:pPr><w:spacing w:after="80"/></w:pPr></w:style>${sty('Title','Title',48,1)}${sty('Heading1','heading 1',32,1)}${sty('Heading2','heading 2',26,1)}</w:styles>`},
+  {name:'word/document.xml',text:X+`<w:document ${W}><w:body>${body}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr></w:body></w:document>`}])}
+function printModel(M){const old=$('#pdoc');if(old)old.remove();const p=document.createElement('div');p.id='pdoc';p.className='pdoc';
+ p.innerHTML=M.map(([k,t])=>k==='title'?`<h1>${esc(t)}</h1>`:k==='h'?`<h2>${esc(t)}</h2>`:k==='h2'?`<h3>${esc(t)}</h3>`:k==='mono'?`<pre>${esc(t)}</pre>`:`<p>${esc(t)}</p>`).join('');
+ document.body.appendChild(p);document.body.classList.add('printing');
+ const done=()=>{document.body.classList.remove('printing');p.remove();removeEventListener('afterprint',done)};addEventListener('afterprint',done);setTimeout(()=>window.print(),60);setTimeout(done,120000)}
+async function downloadMine(kind){const er=$('#dle');if(er)er.textContent='';const bs=$$('#dl,#dlp');bs.forEach(b=>b.disabled=true);
+ try{const r=await CLOUD.rpc('export_my_data');if(r.error)throw r.error;const M=exportModel(r.data);
+  if(kind==='pdf')printModel(M);
+  else{const b=buildDocx(M),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='northstep-my-data.docx';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}}
+ catch(x){if(er)er.textContent='We couldn’t prepare your data right now. Try again in a moment.'}
+ finally{bs.forEach(b=>b.disabled=false)}}
+
+/* ---- Sidebar: open or collapsed, with a hover preview ---- */
+function sbSet(c,persist){document.body.classList.toggle('sbc',!!c);document.body.classList.remove('sbp');const b=$('#sbt');
+ if(b){b.setAttribute('aria-expanded',String(!c));b.setAttribute('aria-label',c?'Open sidebar':'Close sidebar');b.title=c?'Open sidebar':'Close sidebar'}
+ if(persist)LS.set('sbc',c?1:0);fitMe()}
+(()=>{const b=$('#sbt'),side=$('aside');if(!b||!side)return;let tm=0,sup=false;
+ const wide=()=>matchMedia('(min-width:861px)').matches;
+ const on=()=>{if(!document.body.classList.contains('sbc')||sup||!wide())return;clearTimeout(tm);document.body.classList.add('sbp');fitMe()};
+ const off=()=>{clearTimeout(tm);tm=setTimeout(()=>{document.body.classList.remove('sbp');fitMe()},180)};
+ b.addEventListener('mouseenter',on);b.addEventListener('focus',()=>{if(b.matches(':focus-visible'))on()});
+ side.addEventListener('mouseenter',()=>clearTimeout(tm));side.addEventListener('mouseleave',()=>{sup=false;off()});
+ side.addEventListener('focusout',e=>{if(!side.contains(e.relatedTarget))off()});
+ b.onclick=()=>{const c=document.body.classList.contains('sbc');sup=!c;sbSet(!c,true)};
+ addEventListener('beforeprint',()=>$$('details.calc').forEach(d=>d.open=true))})();
+function fitText(el,max,min,wrapAfter){if(!el)return;el.style.fontSize='';el.style.whiteSpace='';if(!el.clientWidth)return;let f=max,g=0;el.style.fontSize=f+'px';
+ if(wrapAfter)el.style.whiteSpace='nowrap';
+ while(el.scrollWidth>el.clientWidth+0.5&&f>min&&g++<24){f-=0.5;el.style.fontSize=f+'px'}
+ if(wrapAfter&&el.scrollWidth>el.clientWidth+0.5)el.style.whiteSpace='normal'}
+function fitMe(){fitText($('#mn'),13.5,11);fitText($('#me'),12,10);fitText($('#ppem'),13,11,true)}
+addEventListener('resize',()=>fitMe());
+function jumpProg(){go('roadmap');let n=0;const t=setInterval(()=>{const e=$('#prog-sec');
+ if(e&&e.getBoundingClientRect().height){clearInterval(t);e.scrollIntoView({behavior:theme.calm?'auto':'smooth',block:'center'});e.classList.add('flash');setTimeout(()=>e.classList.remove('flash'),1800);e.setAttribute('tabindex','-1');e.focus({preventScroll:true})}
+ else if(++n>30)clearInterval(t)},80)}
 
 async function ensureProfile(u){
  const g=await CLOUD.from('profiles').select('user_id').eq('user_id',u.id).maybeSingle();if(g.error)throw g.error;
@@ -1416,14 +1613,14 @@ function authMsg(er){const c=String(er&&er.code||''),st=er&&er.status;
 function setMode(mm){mode=mm;$$('#tabs button').forEach(x=>{const on=x.dataset.m===mm;x.classList.toggle('on',on);x.setAttribute('aria-pressed',String(on))});
  const tb=$('#tabs'),nf=$('#nf'),sf=$('#sf'),cw=$('#consw'),lt=$('#lt'),sp=$('#lbtn span'),le=$('#lerr'),lo=$('#lok'),lp=$('#lp');if(tb)tb.classList.toggle('r',mm==='up');if(nf)nf.style.display=mm==='up'?'block':'none';
  if(sf)sf.style.display=mm==='up'?'block':'none';if(cw)cw.style.display=mm==='up'?'flex':'none';
- if(lt)lt.textContent=mm==='up'?'Create your account':'Welcome back';if(sp)sp.textContent=mm==='up'?'Create account':'Sign in';if(le)le.textContent='';if(lo)lo.textContent='';if(lp)lp.autocomplete=mm==='up'?'new-password':'current-password'}
+ if(lt)lt.textContent=mm==='up'?'Create your account':'Welcome back';const lsb=$('#ls');if(lsb)lsb.textContent=mm==='up'?'It takes about a minute.':'Sign in to continue your roadmap.';const lfm=$('#lf');if(lfm)lfm.classList.toggle('su',mm==='up');if(sp)sp.textContent=mm==='up'?'Create account':'Sign in';if(le)le.textContent='';if(lo)lo.textContent='';if(lp)lp.autocomplete=mm==='up'?'new-password':'current-password'}
 $$('#tabs button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));
 $('#pwt').onclick=e=>{const lp=$('#lp'),on=lp.type==='password';lp.type=on?'text':'password';e.currentTarget.textContent=on?'Hide':'Show';e.currentTarget.setAttribute('aria-pressed',String(on))};
 function enter(user){user=cleanUser(user);setScope(user);LS.set('user',user);
- renderMe();
+ renderMe();sbSet(LS.get('sbc',0)===1,false);
  document.body.classList.toggle('guest',!!user.guest);$('#login').classList.add('gone');$('#app').classList.add('on');document.body.classList.add('signed');main.innerHTML='';state={view:'',param:null};
  const r=parseRoute();if(r)go(r.v,r.p,'replace');else go('home',null,'replace')}
-function showLogin(note){closePP();document.body.classList.remove('guest');LS.del('user');SCOPE='';document.body.classList.remove('signed');$('#app').classList.remove('on');$('#login').classList.remove('gone');$('#lp').value='';main.innerHTML='';state={view:'',param:null};
+function showLogin(note){closePP();closeModal();document.body.classList.remove('guest');LS.del('user');SCOPE='';document.body.classList.remove('signed');$('#app').classList.remove('on');$('#login').classList.remove('gone');$('#lp').value='';main.innerHTML='';state={view:'',param:null};
  B=undefined;N=undefined;PS={s:1,e:'',t:'',err:''};try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}$('#lerr').textContent=typeof note==='string'?note:'';$('#lok').textContent=''}
 async function logout(note){const u=me();
  if(CLOUD&&!u.guest&&u.uid){
@@ -1438,10 +1635,6 @@ async function wipeMine(){const u=me(),pre='pb_'+SCOPE+'_',er=$('#dze');
  try{Object.keys(localStorage).filter(k=>k.indexOf(pre)===0).forEach(k=>localStorage.removeItem(k))}catch(e){}
  Object.keys(mem).filter(k=>k.indexOf(pre)===0).forEach(k=>delete mem[k]);
  showLogin(u.guest?'Your guest data was deleted from this device.':'Your account and data were deleted. You can create a new account any time.')}
-async function downloadMine(){const er=$('#dle');if(er)er.textContent='';
- try{const r=await CLOUD.rpc('export_my_data');if(r.error)throw r.error;
-  const b=new Blob([JSON.stringify(r.data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='northstep-my-data.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
- catch(x){if(er)er.textContent='We couldn’t prepare your data right now. Try again in a moment.'}}
 $('#out').onclick=()=>logout();$('#meb').onclick=()=>$('#pnl')?closePP():openPP();
 $('#guest').onclick=()=>{if(!$('#age').checked)return void($('#lerr').textContent='NorthStep is for people 16 and over. Please confirm your age to continue.');enter({name:'Guest',email:'',guest:true})};
 $('#lf').onsubmit=async e=>{e.preventDefault();if(busy)return;
