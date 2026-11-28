@@ -612,6 +612,14 @@ const BUDGET={'Free resources only':.75,'Up to $50 / month':.9,'Flexible budget'
 const BLOCK={'Finding time':'Lock two fixed 90-minute blocks each week. Consistency beats long, rare sessions.','Limited money':'Use free resources first; pay only after finishing a free module.','Unclear direction':'Re-run the Niche Finder after Phase 1 to validate your direction with fresh evidence.','Low confidence':'Share one small project publicly each month to build visible proof of progress.','Staying consistent':'Run one course at a time and track weekly outputs, not hours.'};
 const W={base:.25,A:.20,I:.20,T:.15,P:.10,R:.05,D:.05};
 
+/* ================= Fit-score gate (the hidden-score test) =================
+   Some people in the closed beta get no fit number until their day-21 check-in. The server decides who (score function +
+   row-level security). Until the server has answered, the number stays hidden, so a slow connection never reveals it early. */
+let FVS=null;   /* true: may see it · false: in the test group, locked · null: not known yet */
+function fitVis(){const u=me();if(u.guest)return true;if(FVS===true)return true;if(LS.get('fv',0)===1){FVS=true;return true}return false}
+const FIT_TAG=()=>FVS===false?'Fit locked':'Fit pending';
+const FIT_MSG=()=>FVS===false?'Your fit score is part of a short test. It unlocks after your day-21 check-in. Your roadmap, steps and progress work as normal.':'We are checking whether your fit score can be shown. It will appear here as soon as that is confirmed.';
+
 /* ================= Fit engine (roadmap) ================= */
 function fieldKey(a){return a.edu==='High school'?(STREAM_MAP[a.stream]||'other'):(FIELD_MAP[a.field]||'other')}
 const lvl=(s,t)=>t==='niche'?(s>=75?'Clear result':s>=55?'Fairly clear':'Mixed result'):(s>=75?'Strong fit':s>=55?'Moderate fit':'Stretch');
@@ -639,7 +647,7 @@ function compute(a){
  const raw=100*f.reduce((s,x)=>s+x.v*x.w,0),score=Math.round(clamp(raw,0,100));
  const answered=Object.keys(a).length,margin=Math.max(3,Math.round(11-answered*.45));
  const pace=clamp(need/(a.hours||8),.7,2.2),weeks=Math.round(D.months*4.3*pace*(1-.35*P)*(1-((a.pivot&&a.pivot.sv)||0)));
- return {score,raw,f,margin,weeks,need,P,D,level:lvl(score,'roadmap')};
+ const vis=fitVis();return {score:vis?score:null,raw:vis?raw:null,f:vis?f:[],margin:vis?margin:null,weeks,need,P,D,level:vis?lvl(score,'roadmap'):''};
 }
 function buildPhases(a,r){
  const D=r.D,fr=[.2,.3,.2,.2,.1],tr=D.tracks[a.track]||Object.values(D.tracks)[0];
@@ -728,7 +736,7 @@ document.addEventListener('keydown',e=>{const t=e.target;if((e.key==='Enter'||e.
 /* ================= Home ================= */
 VIEWS.home=m=>{
  const reps=reports(),rm=reps.filter(r=>r.type==='roadmap'),user=me();
- const avg=rm.length?Math.round(rm.reduce((s,r)=>s+r.score,0)/rm.length):null;
+ const rs=rm.filter(r=>r.score!=null),avg=rs.length?Math.round(rs.reduce((s,r)=>s+r.score,0)/rs.length):null;
  const prog=rm.length?Math.round(rm.reduce((s,r)=>s+progressOf(r),0)/rm.length):0;
  const h=new Date().getHours(),g=h<12?'Good morning':h<18?'Good afternoon':'Good evening';
  const last=rm.slice(0,6).reverse();
@@ -741,13 +749,13 @@ VIEWS.home=m=>{
  </div>
  <div class="grid g3" style="margin-top:18px">
   <div class="card stat rise"><b data-count="${reps.length}">0</b><small>Reports created</small></div>
-  <div class="card stat rise"><b ${avg==null?'':`data-count="${avg}" data-suf="%"`}>${avg==null?'–':'0%'}</b><small>Average fit (roadmaps)</small></div>
+  <div class="card stat rise"><b ${avg==null?'':`data-count="${avg}" data-suf="%"`}>${avg==null?'–':'0%'}</b><small>${fitVis()?'Average fit (roadmaps)':FVS===false?'Fit score locked':'Fit score pending'}</small></div>
   <div class="card stat rise"><b data-count="${prog}" data-suf="%">0%</b><small>Roadmap steps completed</small></div>
  </div>
  <div class="grid g21" style="margin-top:18px">
   <div class="card rise"><h3>Fit trend</h3><small>Your latest roadmaps</small>
-   ${last.length?`<div class="trend" role="img" aria-label="Fit indicator of your latest roadmaps: ${last.map(r=>r.score+'%').join(', ')}">${last.map(r=>`<div>${r.score}<i data-h="${r.score}"></i></div>`).join('')}</div>`:'<p style="margin-top:14px"><small>No roadmaps yet.</small></p>'}</div>
-  <div class="card rise"><h3>Recent</h3>${reps.slice(0,3).map(r=>`<div class="row" role="button" tabindex="0" style="cursor:pointer" data-open="${r.id}"><div class="grow"><b>${esc(r.title)}</b><br><small>${fmt(r.created)}</small></div><span class="tag n">${r.score}% ${r.type==='roadmap'?'fit':'clarity'}</span></div>`).join('')||'<small>No reports yet.</small>'}</div>
+   ${!fitVis()?`<p class="muted" style="margin-top:14px">${FIT_MSG()}</p>`:last.length?`<div class="trend" role="img" aria-label="Fit indicator of your latest roadmaps: ${last.map(r=>r.score+'%').join(', ')}">${last.map(r=>`<div>${r.score}<i data-h="${r.score}"></i></div>`).join('')}</div>`:'<p style="margin-top:14px"><small>No roadmaps yet.</small></p>'}</div>
+  <div class="card rise"><h3>Recent</h3>${reps.slice(0,3).map(r=>`<div class="row" role="button" tabindex="0" style="cursor:pointer" data-open="${r.id}"><div class="grow"><b>${esc(r.title)}</b><br><small>${fmt(r.created)}</small></div>${r.score==null?`<span class="tag n">${FIT_TAG()}</span>`:`<span class="tag n">${r.score}% ${r.type==='roadmap'?'fit':'clarity'}</span>`}</div>`).join('')||'<small>No reports yet.</small>'}</div>
  </div></div>`;
  $$('[data-go]',m).forEach(e=>e.onclick=()=>go(e.dataset.go));
  $$('[data-open]',m).forEach(e=>e.onclick=()=>go('report',e.dataset.open));
@@ -827,7 +835,7 @@ function finishBuilder(){
   LS.del('draft_b');if(!B.pre.profile)LS.set('profile',{...LS.get('profile',{}),...profOf(B.a)});
   const r=compute(B.a),rep={id:uid(),type:'roadmap',created:Date.now(),title:`${DOMAINS[B.a.domain].name} roadmap${B.a.pivot?' (pivot)':''}`,score:r.score,a:{...B.a},done:{}};
   cloudRoadmap(rep,buildPhases(B.a,r));
-  const all=reports();all.unshift(rep);saveReports(all);go('roadmap',rep.id)});
+  const all=reports();all.unshift(rep);saveReports(all);scoreSync();go('roadmap',rep.id)});
 }
 
 /* ================= Niche finder ================= */
@@ -866,7 +874,7 @@ VIEWS.reports=m=>{
  m.innerHTML=`<div class="wrap"><div class="head rise"><h1>Reports</h1><p>Everything you’ve generated, saved on this device.</p></div>
  ${reps.length?`<div class="grid">${reps.map(r=>`<div class="card lift rise" data-open="${r.id}"><div class="row rrow" style="padding:0;border:0"><div class="ico" style="margin:0">${svg(r.type==='roadmap'?'route':'compass')}</div>
   <div class="grow"><button type="button" class="rlink"><b style="font-size:1rem">${esc(r.title)}</b><br><small>${r.type==='roadmap'?'Roadmap':'Niche analysis'} · ${fmt(r.created)}${r.type==='roadmap'?` · ${progressOf(r)}% complete`:''}</small></button></div>
-  ${levelTag(r.score,r.type)}<b style="font-family:var(--serif);font-size:1.5rem;min-width:56px;text-align:right" aria-label="${r.score} percent ${r.type==='roadmap'?'fit':'clarity'}">${r.score}%</b>
+  ${r.score==null?`<span class="tag n">${FIT_TAG()}</span>`:`${levelTag(r.score,r.type)}<b style="font-family:var(--serif);font-size:1.5rem;min-width:56px;text-align:right" aria-label="${r.score} percent ${r.type==='roadmap'?'fit':'clarity'}">${r.score}%</b>`}
   <button class="link" data-del="${r.id}" aria-label="Delete report: ${esc(r.title)}" style="margin-left:8px;color:var(--muted)">Delete</button></div></div>`).join('')}</div>`:`<div class="card rise"><p class="muted">Nothing here yet. Build a roadmap or take the Niche Finder.</p></div>`}</div>`;
  $$('[data-open]',m).forEach(e=>e.onclick=()=>go('report',e.dataset.open));
  $$('[data-del]',m).forEach(e=>e.onclick=ev=>{ev.stopPropagation();saveReports(reports().filter(r=>r.id!==e.dataset.del));go('reports')});
@@ -878,18 +886,18 @@ function factorRows(f){return f.map(x=>`<div class="frow"><div><b style="font-we
 function roadmapReport(m,rep){
  const a=rep.a,r=compute(a),ph=buildPhases(a,r),D=r.D,tr=D.tracks[a.track]||Object.values(D.tracks)[0];
  const target=new Date(Date.now()+r.weeks*7*864e5).toLocaleDateString(undefined,{month:'long',year:'numeric'});
- const lo=clamp(r.score-r.margin,0,100),hi=clamp(r.score+r.margin,0,100);
+ const lk=r.score==null,lo=lk?0:clamp(r.score-r.margin,0,100),hi=lk?0:clamp(r.score+r.margin,0,100);
  const tot=ph.reduce((s,p)=>s+p.s.length,0);
  m.innerHTML=`<div class="wrap">
  <div class="noprint rise" style="margin-bottom:18px"><button class="link" id="bk">← All reports</button></div>
- <div class="card rise"><div class="hero">${gaugeHTML(r.score,170,`Fit indicator: ${r.score} percent`)}<div class="grow">
-  <span class="tag">${r.level} · indicative range ${lo}–${hi}%</span> <span class="tag n" style="margin-left:4px">Preview, not yet calibrated</span>
+ <div class="card rise"><div class="hero">${lk?'':gaugeHTML(r.score,170,`Fit indicator: ${r.score} percent`)}<div class="grow">
+  ${lk?`<span class="tag n">${FVS===false?'Fit score locked':'Fit score pending'}</span>`:`<span class="tag">${r.level} · indicative range ${lo}–${hi}%</span> <span class="tag n" style="margin-left:4px">Preview, not yet calibrated</span>`}
   <h1>${esc(a.name||'Your')}${a.name?'’s':''} path into ${D.name}</h1>
   <p class="muted">Focus: ${tr[0]} · ${a.hours||8} h/week · target: ${a.goal}. At this pace you could finish the roadmap around <b style="color:var(--text)">${target}</b> (~${r.weeks} weeks).${(a.hours||8)<r.need*.9?` That is later than your ${a.goal} target. About <b style="color:var(--text)">${Math.ceil(r.need)} h/week</b> would hit it.`:''}</p>
-  <div class="tip" style="margin-top:14px;margin-bottom:0"><b>What this number means</b>The fit indicator shows how well this path matches your answers and constraints. It is not a prediction of whether you will get a job or what you will earn.<div style="margin-top:6px"><button class="link" data-trust type="button">How NorthStep stays honest</button></div></div>
+  <div class="tip" style="margin-top:14px;margin-bottom:0">${lk?`<b>${FVS===false?'Your fit score is locked':'Checking your fit score'}</b>${FIT_MSG()}`:`<b>What this number means</b>The fit indicator shows how well this path matches your answers and constraints. It is not a prediction of whether you will get a job or what you will earn.`}<div style="margin-top:6px"><button class="link" data-trust type="button">How NorthStep stays honest</button></div></div>
   <div class="noprint" style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="pr">Save as PDF</button><button class="btn ghost" id="rt">Retake</button></div></div></div></div>
  <div class="grid g2" style="margin-top:18px">
-  <div class="card rise"><h3>Why this score</h3><small>Each factor (0–100%) × its weight</small><div style="margin-top:8px">${factorRows(r.f)}</div></div>
+  ${lk?'':`<div class="card rise"><h3>Why this score</h3><small>Each factor (0–100%) × its weight</small><div style="margin-top:8px">${factorRows(r.f)}</div></div>`}
   <div class="card rise"><h3>Lines of work</h3><small>Typical roles</small>
    <div class="res" style="margin-top:12px">${D.roles.map(x=>`<span class="tag">${x}</span>`).join('')}</div>
    <p style="margin-top:16px" class="muted">${D.day}</p>
@@ -1154,7 +1162,7 @@ VIEWS.home=m=>{
  ${progCard}</div>
  <div class="card lift rise" data-go="pivot" role="button" tabindex="0" style="margin-top:18px"><div class="rrow"><div class="ico" style="margin:0">${svg('swap')}</div><div class="grow"><h3 style="margin:0 0 2px">Changing direction?</h3><p class="muted">Pivot maps what you’ve already learned onto a new path, so none of that time is wasted.</p></div><span class="link" aria-hidden="true">See what carries over ${svg('arrow')}</span></div></div>
  <div class="grid g2" style="margin-top:18px"><div class="card rise"><h3>This week</h3><p class="muted" id="dc" style="margin-bottom:12px">${days.filter(Boolean).length} of 5 practice days</p><div class="days">${['M','T','W','T','F','S','S'].map((d,i)=>`<button data-d="${i}" aria-pressed="${!!days[i]}" class="${days[i]?'on':''}">${d}</button>`).join('')}</div></div>
- <div class="card rise"><h3>Fit indicator</h3>${rep?`<div class="bar" style="margin:14px 0 8px;position:relative"><i style="position:absolute;left:${lo}%;width:${hi-lo}%"></i></div><b>Indicative range ${lo} to ${hi}</b><p style="margin-top:6px"><span class="tag n">Preview, not yet calibrated</span></p><p style="margin-top:8px"><button class="link" data-go="trust" type="button">What does this mean?</button></p>`:'<p class="muted">Appears after your first roadmap.</p>'}</div></div>
+ <div class="card rise"><h3>Fit indicator</h3>${rep&&rep.score==null?`<p class="muted" style="margin-top:12px">${FIT_MSG()}</p>`:rep?`<div class="bar" style="margin:14px 0 8px;position:relative"><i style="position:absolute;left:${lo}%;width:${hi-lo}%"></i></div><b>Indicative range ${lo} to ${hi}</b><p style="margin-top:6px"><span class="tag n">Preview, not yet calibrated</span></p><p style="margin-top:8px"><button class="link" data-go="trust" type="button">What does this mean?</button></p>`:'<p class="muted">Appears after your first roadmap.</p>'}</div></div>
  <div class="grid g2" style="margin-top:18px">${[['discover','compass','Niche finder','Not sure of your field? Check your result clarity'],['reports','file','Reports','Print or copy a summary']].map(x=>`<div class="card lift rise" data-go="${x[0]}" role="button" tabindex="0"><div class="ico">${svg(x[1])}</div><h3>${x[2]}</h3><p class="muted">${x[3]}</p></div>`).join('')}</div></div>`;
  $$('[data-go]',m).forEach(e=>e.onclick=()=>go(e.dataset.go));
  const pcd=$('[data-prog]',m);if(pcd){pcd.onclick=jumpProg;pcd.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();jumpProg()}}}
@@ -1242,19 +1250,19 @@ function backBar(m,def){const w=$('.wrap',m);if(!w)return;const p=prevV&&prevV.v
 {const _p=VIEWS.pay,_t=VIEWS.trust;VIEWS.pay=(m,x)=>{_p(m,x);backBar(m,{v:'home',p:null})};VIEWS.trust=(m,x)=>{_t(m,x);backBar(m,{v:'settings',p:null})}}
 /* ================= v4: Reports ================= */
 let RF='all';
-const summary=r=>r.type==='roadmap'?`${r.title}: fit indicator around ${r.score} (preview, not yet calibrated), ${progressOf(r)}% complete.`:`${r.title}: result clarity ${r.score}%.`;
+const summary=r=>r.type==='roadmap'?(r.score==null?`${r.title}: ${progressOf(r)}% complete.`:`${r.title}: fit indicator around ${r.score} (preview, not yet calibrated), ${progressOf(r)}% complete.`):`${r.title}: result clarity ${r.score}%.`;
 VIEWS.reports=m=>{
  const all=reports(),list=RF==='all'?all:all.filter(r=>r.type===RF),rm=all.filter(r=>r.type==='roadmap'),steps=rm.reduce((s,r)=>s+Object.keys(r.done||{}).length,0);
  m.innerHTML=`<div class="wrap"><div class="head rise"><h1>Reports</h1><p>${me().guest?'Everything you’ve generated, saved on this device.':'Everything you’ve generated, saved to your account.'} <span class="tag dm">Demo data</span></p></div>
  <div class="grid g3 k3"><div class="card rise stat"><b>${all.length}</b><small>reports</small></div><div class="card rise stat"><b>${steps}</b><small>steps completed</small></div><div class="card rise stat"><b>${all.filter(r=>r.type==='niche').length}</b><small>niche analyses</small></div></div>
  <div class="seg" style="margin-top:20px" id="rf">${[['all','All'],['roadmap','Roadmaps'],['niche','Niche analyses']].map(x=>`<button data-f="${x[0]}" class="${RF===x[0]?'on':''}">${x[1]}</button>`).join('')}</div>
- ${list.length?`<div class="grid">${list.map(r=>`<div class="card lift rise" data-open="${r.id}"><div class="row rrow" style="padding:0;border:0"><div class="ico" style="margin:0">${svg(r.type==='roadmap'?'route':'compass')}</div><div class="grow"><button type="button" class="rlink"><b style="font-size:1rem">${esc(r.title)}</b><br><small>${r.type==='roadmap'?'Roadmap':'Niche analysis'} · ${fmt(r.created)}</small></button></div>${levelTag(r.score,r.type)}${r.type==='roadmap'?'<span class="tag n">Preview</span>':''}<b class="rpct" aria-label="${r.score} percent ${r.type==='roadmap'?'fit':'clarity'}">${r.score}%</b><span class="racts"><button class="link" data-copy="${r.id}">Copy</button><button class="link" data-del="${r.id}" aria-label="Delete ${esc(r.title)}" style="color:var(--muted)">Delete</button></span></div>${r.type==='roadmap'?`<div class="bar" style="margin-top:14px"><i data-w="${progressOf(r)}"></i></div><small>${progressOf(r)}% complete</small>`:''}</div>`).join('')}</div>`:'<div class="card rise"><p class="muted">Nothing here yet. Build a roadmap or take the Niche Finder.</p></div>'}</div>`;
+ ${list.length?`<div class="grid">${list.map(r=>`<div class="card lift rise" data-open="${r.id}"><div class="row rrow" style="padding:0;border:0"><div class="ico" style="margin:0">${svg(r.type==='roadmap'?'route':'compass')}</div><div class="grow"><button type="button" class="rlink"><b style="font-size:1rem">${esc(r.title)}</b><br><small>${r.type==='roadmap'?'Roadmap':'Niche analysis'} · ${fmt(r.created)}</small></button></div>${r.score==null?`<span class="tag n">${FIT_TAG()}</span>`:`${levelTag(r.score,r.type)}${r.type==='roadmap'?'<span class="tag n">Preview</span>':''}<b class="rpct" aria-label="${r.score} percent ${r.type==='roadmap'?'fit':'clarity'}">${r.score}%</b>`}<span class="racts"><button class="link" data-copy="${r.id}">Copy</button><button class="link" data-del="${r.id}" aria-label="Delete ${esc(r.title)}" style="color:var(--muted)">Delete</button></span></div>${r.type==='roadmap'?`<div class="bar" style="margin-top:14px"><i data-w="${progressOf(r)}"></i></div><small>${progressOf(r)}% complete</small>`:''}</div>`).join('')}</div>`:'<div class="card rise"><p class="muted">Nothing here yet. Build a roadmap or take the Niche Finder.</p></div>'}</div>`;
  $$('[data-open]',m).forEach(e=>e.onclick=()=>go('report',e.dataset.open));
  $$('[data-del]',m).forEach(e=>e.onclick=ev=>{ev.stopPropagation();saveReports(reports().filter(r=>r.id!==e.dataset.del));go('reports')});
  $$('[data-copy]',m).forEach(e=>e.onclick=ev=>{ev.stopPropagation();const r=all.find(x=>x.id===e.dataset.copy);copyTxt(r?summary(r):'').then(ok=>{e.textContent=ok?'Copied':'Unavailable';setTimeout(()=>e.textContent='Copy',1800)})});
  $$('#rf button').forEach(b=>b.onclick=()=>{RF=b.dataset.f;VIEWS.reports(m);reveal(m)});
 };
-function CALC_HTML(rep){const a=rep.a||{},r=compute(a);
+function CALC_HTML(rep){const a=rep.a||{},r=compute(a);if(r.score==null)return '';
  return `<details class="card rise calc" style="margin-top:18px"><summary><span><b>How we calculated it</b><small>Transparent by design</small></span>${svg('chev','chev')}</summary><div class="cin"><div class="math">Score = 100 × Σ (weight × factor)<br>= 100 × (${r.f.map(x=>`${x.w}×${x.v.toFixed(2)}`).join(' + ')})<br>= ${r.raw.toFixed(1)} → <b>${r.score}%</b> (shown on a 0–100 scale, no floor or cap)<br>Indicative range = score ± ${r.margin}. This width is a heuristic based on how many questions you answered, not a statistical interval. It will be replaced once calibration data exists.<br>Timeline = field months × pace(${(r.need/(a.hours||8)).toFixed(2)}) × (1 − 0.35 × momentum ${r.P.toFixed(2)})${a.pivot?` × (1 − pivot credit ${a.pivot.sv.toFixed(2)})`:''} = ${r.weeks} wks</div><p class="disc">Illustrative data: benchmarks and demand figures are placeholders, not real statistics.</p></div></details>`}
 const _rv=VIEWS.report;
 VIEWS.report=(m,id)=>{_rv(m,id);const rep=reports().find(r=>r.id===id),w=$('.wrap',m);$$('[data-trust]',m).forEach(b=>b.onclick=()=>go('trust'));if(!w)return;if(!rep){w.insertAdjacentHTML('afterbegin','<div class="tip" role="status"><b>We couldn’t find that report</b>It may have been deleted, or it was saved on another device.</div>');return}const a=rep.a||{},dq=[...(a.dq1||[]),a.dq2].filter(Boolean);
@@ -1264,7 +1272,7 @@ VIEWS.report=(m,id)=>{_rv(m,id);const rep=reports().find(r=>r.id===id),w=$('.wra
 /* ================= Auth + cloud saving =================
    Sign-in is Supabase Auth (email confirmed, password min 10). Guests stay on this device.
    Every cloud write is an insert into a table with row-level security: a user can only touch their own rows.
-   The fit score is still computed in this page. The scoring server (not built yet) will own it. */
+   The fit score is still calculated in this page for display, but the server (Edge Function "score") records it and decides who may see it. Unknown means hidden. */
 const CLOUD_CFG={url:'https://zrtiqzsytbnjnkgoieef.supabase.co',key:'sb_publishable_4HOjw-4VI2jdLzpqSUw2rA_k0aYRsIE'};
 const CONSENT_V='draft-2026-11-26';
 const CLOUD=(()=>{try{if(!window.supabase||!window.supabase.createClient)return null;
@@ -1290,7 +1298,19 @@ async function cloudFlush(){if(CQ.busy||!cloudOn())return;CQ.busy=true;
      console.warn('NorthStep: dropped a row the server refused',op.t,c)}}
    CQ.set(CQ.get().slice(1))}}   /* re-read: more rows may have been added while we waited */
  finally{CQ.busy=false}}
-addEventListener('online',()=>cloudFlush());
+addEventListener('online',()=>{cloudFlush();scoreSync();refreshFV()});
+/* Fit-score server: "may this person see their score?" and "record this roadmap's score". Failure means "unknown", never "visible". */
+async function fitCall(body){if(!cloudOn())return null;try{const r=await CLOUD.functions.invoke('score',{body});return r.error?null:r.data}catch(e){return null}}
+function applyFV(d){if(!d||d.known!==true)return;const was=fitVis();if(d.visible){FVS=true;LS.set('fv',1)}else if(FVS!==true)FVS=false;
+ if(fitVis()!==was&&state&&['home','roadmap','report','reports'].includes(state.view))go(state.view,state.param,'replace')}
+async function refreshFV(){applyFV(await fitCall({op:'status'}));return FVS}
+let SCB=false;
+async function scoreSync(){if(SCB||!cloudOn())return;SCB=true;
+ try{const done=LS.get('scored',{});let n=0,ch=false;
+  for(const r of reports()){if(r.type!=='roadmap'||!r.cid||done[r.cid])continue;if(++n>10)break;
+   const d=await fitCall({op:'fit',cid:r.cid,a:r.a});if(!d)break;   /* offline or server trouble: try again later */
+   done[r.cid]=1;ch=true;applyFV(d)}
+  if(ch)LS.set('scored',done)}finally{SCB=false}}
 function cloudRoadmap(rep,ph){if(!cloudOn())return;const a=rep.a,cid=uuid4();rep.cid=cid;
  const p=cleanA(a);delete p.name;
  cloudPut('answers',{user_id:cuid(),kind:'questionnaire',question_version:'q-v4',payload:p});
@@ -1423,7 +1443,7 @@ document.addEventListener('visibilitychange',()=>{if(cloudOn())syncNow()});
 addEventListener('focus',()=>{if(cloudOn())syncNow()});
 addEventListener('online',()=>{if(cloudOn())syncNow()});
 addEventListener('pagehide',()=>{if(cloudOn()&&smeta().dirty)syncNow()});
-setInterval(()=>{if(!document.hidden&&cloudOn())syncNow()},60000);
+setInterval(()=>{if(!document.hidden&&cloudOn()){syncNow();if(!fitVis()){refreshFV();scoreSync()}}},60000);
 
 /* ================= Profile card, photo ================= */
 function paintAv(el){if(!el)return;const u=me(),s=avatarSrc();el.textContent='';
@@ -1535,7 +1555,7 @@ function exportModel(d){d=d&&typeof d==='object'?d:{};const u=me(),M=[],kv=(k,v)
  M.push(['h','Account']);kv('Name',u.name);kv('Email',u.email);if(d.profile&&typeof d.profile==='object')Object.keys(d.profile).forEach(k=>kv(k.replace(/_/g,' '),d.profile[k]));
  const st=d.saved_state?normState(d.saved_state):null;
  if(st){M.push(['h','Your roadmaps and progress']);if(!st.reports.length)M.push(['p','No reports saved.']);
-  st.reports.forEach(r=>{M.push(['h2',r.title]);kv('Type',r.type==='roadmap'?'Roadmap':'Niche analysis');kv('Created',fmt(r.created));kv(r.type==='roadmap'?'Fit indicator':'Result clarity',r.score+'%');
+  st.reports.forEach(r=>{M.push(['h2',r.title]);kv('Type',r.type==='roadmap'?'Roadmap':'Niche analysis');kv('Created',fmt(r.created));if(r.score!=null)kv(r.type==='roadmap'?'Fit indicator':'Result clarity',r.score+'%');
    if(r.type==='roadmap'){let ph=[];try{ph=buildPhases(r.a,compute(r.a))}catch(e){}ph.forEach((p,i)=>{M.push(['p',`Phase ${i+1}: ${p.t}`]);p.s.forEach((s,j)=>M.push(['p',`   ${(r.done||{})[i+'-'+j]?'[done]':'[ ]'} ${s}`]))});
     M.push(['p','Your answers: '+JSON.stringify(r.a)])}});
   if(st.pivots.length){M.push(['h','Pivots']);st.pivots.forEach(p=>M.push(['p',`${new Date(p.at).toLocaleDateString()}: ${p.f} to ${p.t}`]))}}
@@ -1597,8 +1617,8 @@ async function ensureProfile(u){
 async function cloudEnter(u){await ensureProfile(u);const md=u.user_metadata||{};
  const usr=cleanUser({name:cleanText(md.name,40)||'Friend',email:u.email||'',uid:u.id});
  setScope(usr);LS.set('user',usr);   /* so the saved copy can be loaded before the first screen is drawn */
- try{await Promise.race([syncNow(),new Promise(r=>setTimeout(r,6000))])}catch(e){}
- enter(usr);cloudFlush()}
+ FVS=null;try{await Promise.race([Promise.all([syncNow(),refreshFV()]),new Promise(r=>setTimeout(r,6000))])}catch(e){}
+ enter(usr);cloudFlush();scoreSync()}
 function authMsg(er){const c=String(er&&er.code||''),st=er&&er.status;
  if(c==='invalid_credentials')return 'That email and password don’t match.';
  if(c==='email_not_confirmed')return 'Please confirm your email first. Check your inbox for our link.';
@@ -1620,7 +1640,7 @@ function enter(user){user=cleanUser(user);setScope(user);LS.set('user',user);
  renderMe();sbSet(LS.get('sbc',0)===1,false);
  document.body.classList.toggle('guest',!!user.guest);$('#login').classList.add('gone');$('#app').classList.add('on');document.body.classList.add('signed');main.innerHTML='';state={view:'',param:null};
  const r=parseRoute();if(r)go(r.v,r.p,'replace');else go('home',null,'replace')}
-function showLogin(note){closePP();closeModal();document.body.classList.remove('guest');LS.del('user');SCOPE='';document.body.classList.remove('signed');$('#app').classList.remove('on');$('#login').classList.remove('gone');$('#lp').value='';main.innerHTML='';state={view:'',param:null};
+function showLogin(note){FVS=null;closePP();closeModal();document.body.classList.remove('guest');LS.del('user');SCOPE='';document.body.classList.remove('signed');$('#app').classList.remove('on');$('#login').classList.remove('gone');$('#lp').value='';main.innerHTML='';state={view:'',param:null};
  B=undefined;N=undefined;PS={s:1,e:'',t:'',err:''};try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}$('#lerr').textContent=typeof note==='string'?note:'';$('#lok').textContent=''}
 async function logout(note){const u=me();
  if(CLOUD&&!u.guest&&u.uid){
@@ -1682,7 +1702,7 @@ async function renderCheckin(m,rep){const host=$('#ckp',m);if(!host||!rep||!rep.
   const row={user_id:cuid(),roadmap_id:rep.cid,fit_rating:pick.ck1,niche_felt_right:pick.ck2||null,comment:cleanText($('#ckc',host).value,1000)||null};
   let er=null;try{const r=await CLOUD.from('checkins').insert(row);er=r.error}catch(x){er={code:''}}
   if(er&&er.code!=='23505'){$('#cke',host).textContent=er.code==='22023'?'The check-in opens on day 21. Please come back then.':'We couldn’t send that. Check your connection and try again.';b.disabled=false;return}
-  host.innerHTML='<div class="card rise" style="padding:14px 20px;margin-bottom:18px"><div class="rrow"><span class="tag">Day 21</span><span class="grow">Thanks, your check-in is in.</span></div></div>'}}
+  host.innerHTML='<div class="card rise" style="padding:14px 20px;margin-bottom:18px"><div class="rrow"><span class="tag">Day 21</span><span class="grow">Thanks, your check-in is in.</span></div></div>';refreshFV()}}
 {const _h=VIEWS.home;VIEWS.home=(m,x)=>{_h(m,x);renderCheckin(m,reports().filter(r=>r.type==='roadmap')[0])}}
 /* Two tabs open: signing out or changing data in one is reflected in the other. */
 window.addEventListener('storage',e=>{if(!e.key||e.key.indexOf('pb_')!==0)return;
