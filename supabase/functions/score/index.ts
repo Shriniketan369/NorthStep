@@ -8,10 +8,10 @@
 //   * For people in the hidden-score test group, it saves the score but does NOT send the number back
 //     until they have done their day-21 check-in. The database enforces the same rule (row-level security).
 //
-// The model below is a copy of the demo model in index.html ("demo-1"). tests/parity.test.mjs checks they agree.
+// The model below is stage 1 of the NorthStep algorithm spec (five personal factors). It matches fit.py and index.html; the parity tests check all three.
 // When the calibrated model replaces it, change MODEL_VERSION so old and new scores are never mixed up.
 
-export const MODEL_VERSION = 'demo-1';
+export const MODEL_VERSION = 'stage1-1';
 // deno-lint-ignore no-explicit-any
 const M: any = {
  "DK": [
@@ -190,13 +190,11 @@ const M: any = {
   "Flexible budget": 1
  },
  "W": {
-  "base": 0.25,
-  "A": 0.2,
-  "I": 0.2,
-  "T": 0.15,
-  "P": 0.1,
-  "R": 0.05,
-  "D": 0.05
+  "A": 0.29,
+  "I": 0.29,
+  "T": 0.21,
+  "P": 0.14,
+  "R": 0.07
  },
  "BLOCK": [
   "Finding time",
@@ -551,6 +549,8 @@ export function cleanA(a: any) {
   return o;
 }
 
+// Halves round to the even number, as in the Python spec code (fit.py), so range widths match.
+const rhe = (x: number) => { const f = Math.floor(x), d = x - f; return d === .5 ? (f % 2 === 0 ? f : f + 1) : Math.round(x); };
 const lvl = (s: number) => (s >= 75 ? 'Strong fit' : s >= 55 ? 'Moderate fit' : 'Stretch');
 
 // Same arithmetic as compute() in index.html (score part only).
@@ -563,7 +563,7 @@ export function computeFit(a: any) {
   const Ih = hv.length ? clamp((hv.reduce((s: number, x: number) => s + x, 0) / hv.length) / .75, 0, 1) : null;
   const In = a.nicheFit != null ? clamp(a.nicheFit / 100, 0, 1) : null;
   const I = Ih != null && In != null ? (Ih + In) / 2 : (Ih != null ? Ih : (In != null ? In : .3));
-  const months = M.TIMELINE[a.goal] || 12, need = D.hours * Math.sqrt(12 / months);
+  const months = M.TIMELINE[a.goal] || 12, need = Math.max(D.hours * Math.sqrt(12 / months), 7.5);
   const T = clamp((a.hours || 8) / need, 0, 1);
   let P = a.status === 'Studying full-time' ? .3 : a.status === 'Job hunting' ? .35 : a.status === 'Freelancing / building something' ? .5 : (M.EXPY[a.exp] ?? .4);
   if (['Working full-time', 'Switching careers', 'Freelancing / building something'].includes(a.status) && M.EXPY[a.exp] != null) P = M.EXPY[a.exp];
@@ -573,12 +573,12 @@ export function computeFit(a: any) {
   P = clamp(P, 0, 1);
   const R = M.BUDGET[a.budget] ?? .8;
   const f = [
-    { k: 'base', v: D.base, w: M.W.base }, { k: 'A', v: A, w: M.W.A }, { k: 'I', v: I, w: M.W.I }, { k: 'T', v: T, w: M.W.T },
-    { k: 'P', v: P, w: M.W.P }, { k: 'R', v: R, w: M.W.R }, { k: 'D', v: D.demand, w: M.W.D },
+    { k: 'A', v: A, w: M.W.A }, { k: 'I', v: I, w: M.W.I }, { k: 'T', v: T, w: M.W.T }, { k: 'P', v: P, w: M.W.P }, { k: 'R', v: R, w: M.W.R },
   ];
-  const raw = 100 * f.reduce((s, x) => s + x.v * x.w, 0), score = Math.round(clamp(raw, 0, 100));
-  const answered = Object.keys(a).length, margin = Math.max(3, Math.round(11 - answered * .45));
-  return { score, raw, margin, level: lvl(score), factors: Object.fromEntries(f.map((x) => [x.k, Math.round(x.v * 1000) / 1000])) };
+  const raw = 100 * f.reduce((s, x) => s + x.v * x.w, 0), score = rhe(clamp(raw, 0, 100));
+  const answered = ['domain', 'edu', 'stream', 'field', 'standing', 'status', 'exp', 'hobbies', 'nicheFit', 'hours', 'goal', 'budget']
+    .filter((k) => { const v = a[k]; return v != null && v !== '' && !(Array.isArray(v) && !v.length); }).length, margin = Math.max(3, rhe(11 - answered * .45));
+  return { score, raw, margin, level: lvl(score), factors: Object.fromEntries(f.map((x) => [x.k, Math.round(x.v * 1000) / 1000])), context: { base: D.base, demand: D.demand } };
 }
 
 async function sha256(t: string) {

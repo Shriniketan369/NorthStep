@@ -610,12 +610,14 @@ const TIMELINE={'6 months':6,'1 year':12,'2–3 years':30,'5+ years':60};
 const EXPY={'Under 1':.25,'1–3':.45,'3–7':.65,'7+':.8};
 const BUDGET={'Free resources only':.75,'Up to $50 / month':.9,'Flexible budget':1};
 const BLOCK={'Finding time':'Lock two fixed 90-minute blocks each week. Consistency beats long, rare sessions.','Limited money':'Use free resources first; pay only after finishing a free module.','Unclear direction':'Re-run the Niche Finder after Phase 1 to validate your direction with fresh evidence.','Low confidence':'Share one small project publicly each month to build visible proof of progress.','Staying consistent':'Run one course at a time and track weekly outputs, not hours.'};
-const W={base:.25,A:.20,I:.20,T:.15,P:.10,R:.05,D:.05};
+const W={A:.29,I:.29,T:.21,P:.14,R:.07};   /* stage 1 of the algorithm spec: five personal factors */
 
 /* ================= Fit-score gate (the hidden-score test) =================
    Some people in the closed beta get no fit number until their day-21 check-in. The server decides who (score function +
    row-level security). Until the server has answered, the number stays hidden, so a slow connection never reveals it early. */
 let FVS=null;   /* true: may see it · false: in the test group, locked · null: not known yet */
+/* round halves to the even number, the way the Python spec code does, so range widths match everywhere */
+function rhe(x){const f=Math.floor(x),d=x-f;return d===.5?(f%2===0?f:f+1):Math.round(x)}
 function fitVis(){const u=me();if(u.guest)return true;if(FVS===true)return true;if(LS.get('fv',0)===1){FVS=true;return true}return false}
 const FIT_TAG=()=>FVS===false?'Fit locked':'Fit pending';
 const FIT_MSG=()=>FVS===false?'Your fit score is part of a short test. It unlocks after your day-21 check-in. Your roadmap, steps and progress work as normal.':'We are checking whether your fit score can be shown. It will appear here as soon as that is confirmed.';
@@ -629,25 +631,24 @@ function compute(a){
  const hv=(a.hobbies||[]).map(h=>((HOB[h]||{})[a.domain])??.1);
  const Ih=hv.length?clamp((hv.reduce((s,x)=>s+x,0)/hv.length)/.75,0,1):null,In=a.nicheFit!=null?clamp(a.nicheFit/100,0,1):null;
  const I=Ih!=null&&In!=null?(Ih+In)/2:(Ih!=null?Ih:(In!=null?In:.3));
- const months=TIMELINE[a.goal]||12,need=D.hours*Math.sqrt(12/months);
+ const months=TIMELINE[a.goal]||12,need0=D.hours*Math.sqrt(12/months),need=Math.max(need0,7.5);
  const T=clamp((a.hours||8)/need,0,1);
  let P=a.status==='Studying full-time'?.3:a.status==='Job hunting'?.35:a.status==='Freelancing / building something'?.5:(EXPY[a.exp]??.4);
  if(['Working full-time','Switching careers','Freelancing / building something'].includes(a.status)&&EXPY[a.exp]!=null)P=EXPY[a.exp];
  P+={'Top of the class':.1,'Comfortably good':.05,'Struggling a bit':-.05}[a.standing]||0;
  if(A>=.8)P+=.1; if(a.status==='Switching careers'&&A<.5)P*=.85; P=clamp(P,0,1);
  const R=BUDGET[a.budget]??.8;
+ const ctx=[{label:'Field success benchmark',v:D.base,note:'illustrative benchmark'},{label:'Market demand',v:D.demand,note:'illustrative data'}];
  const f=[
-  {k:'base',label:'Field success benchmark',v:D.base,w:W.base,note:'illustrative benchmark'},
   {k:'A',label:'Education alignment',v:A,w:W.A},
   {k:'I',label:'Interest fit',v:I,w:W.I},
   {k:'T',label:'Time commitment',v:T,w:W.T,note:`${a.hours||8}h of ~${need.toFixed(1)}h needed`},
   {k:'P',label:'Experience & momentum',v:P,w:W.P},
-  {k:'R',label:'Resources',v:R,w:W.R},
-  {k:'D',label:'Market demand',v:D.demand,w:W.D,note:'illustrative data'}];
- const raw=100*f.reduce((s,x)=>s+x.v*x.w,0),score=Math.round(clamp(raw,0,100));
- const answered=Object.keys(a).length,margin=Math.max(3,Math.round(11-answered*.45));
- const pace=clamp(need/(a.hours||8),.7,2.2),weeks=Math.round(D.months*4.3*pace*(1-.35*P)*(1-((a.pivot&&a.pivot.sv)||0)));
- const vis=fitVis();return {score:vis?score:null,raw:vis?raw:null,f:vis?f:[],margin:vis?margin:null,weeks,need,P,D,level:vis?lvl(score,'roadmap'):''};
+  {k:'R',label:'Resources',v:R,w:W.R}];
+ const raw=100*f.reduce((s,x)=>s+x.v*x.w,0),score=rhe(clamp(raw,0,100));
+ const answered=['domain','edu','stream','field','standing','status','exp','hobbies','nicheFit','hours','goal','budget'].filter(k=>{const v=a[k];return v!=null&&v!==''&&!(Array.isArray(v)&&!v.length)}).length,margin=Math.max(3,rhe(11-answered*.45));
+ const pace=clamp(need0/(a.hours||8),.7,2.2),weeks=Math.round(D.months*4.3*pace*(1-.35*P)*(1-((a.pivot&&a.pivot.sv)||0)));
+ const vis=fitVis();return {score:vis?score:null,raw:vis?raw:null,f:vis?f:[],ctx:vis?ctx:[],margin:vis?margin:null,weeks,need,need0,P,D,level:vis?lvl(score,'roadmap'):''};
 }
 function buildPhases(a,r){
  const D=r.D,fr=[.2,.3,.2,.2,.1],tr=D.tracks[a.track]||Object.values(D.tracks)[0];
@@ -787,7 +788,7 @@ VIEWS.builder=(m,pre)=>{
  B={a:pre?{domain:pre}:{},cur:'name'};
  m.innerHTML=`<div class="wrap"><div class="stage">
  <div class="card rise" style="padding:38px"><div class="ico">${svg('route')}</div><h1 style="font-size:1.875rem">Let’s map your path.</h1>
- <p class="muted" style="margin:12px 0 22px">About two minutes. Your answers decide which questions come next, then we calculate a roadmap and a fit indicator from seven weighted factors.</p>
+ <p class="muted" style="margin:12px 0 22px">About two minutes. Your answers decide which questions come next, then we calculate a roadmap and a fit indicator from five personal factors.</p>
  ${pre?`<div class="tip"><b>Prefilled from Niche Finder</b>Aspiration set to ${DOMAINS[pre].name}. You can change it later.</div>`:''}
  <button class="btn" id="st">Start ${svg('arrow','').replace('<svg','<svg width="18" height="18"')}</button></div></div></div>`;
  $('#st').onclick=()=>{m.innerHTML=`<div class="wrap"><div class="stage"><div class="prog"><span id="bs"></span><span id="bp"></span></div><div class="bar"><i id="bf"></i></div><div id="qc"></div></div></div>`;drawQ(1)};
@@ -882,7 +883,7 @@ VIEWS.reports=m=>{
 
 /* ================= Report view ================= */
 VIEWS.report=(m,id)=>{const rep=reports().find(r=>r.id===id);if(!rep){VIEWS.reports(m);return}rep.type==='roadmap'?roadmapReport(m,rep):nicheReport(m,rep)};
-function factorRows(f){return f.map(x=>`<div class="frow"><div><b style="font-weight:500">${x.label}</b>${x.note?`<br><small style="font-size:0.7188rem">${x.note}</small>`:''}</div><div class="bar" role="img" aria-label="${x.label}: ${Math.round(x.v*100)} percent"><i data-w="${Math.round(x.v*100)}"></i></div><small>${Math.round(x.v*100)}% × ${x.w}</small></div>`).join('')}
+function factorRows(f){return f.map(x=>`<div class="frow"><div><b style="font-weight:500">${x.label}</b>${x.note?`<br><small style="font-size:0.7188rem">${x.note}</small>`:''}</div><div class="bar" role="img" aria-label="${x.label}: ${Math.round(x.v*100)} percent"><i data-w="${Math.round(x.v*100)}"></i></div><small>${Math.round(x.v*100)}%${x.w!=null?` × ${x.w}`:''}</small></div>`).join('')}
 function roadmapReport(m,rep){
  const a=rep.a,r=compute(a),ph=buildPhases(a,r),D=r.D,tr=D.tracks[a.track]||Object.values(D.tracks)[0];
  const target=new Date(Date.now()+r.weeks*7*864e5).toLocaleDateString(undefined,{month:'long',year:'numeric'});
@@ -897,7 +898,7 @@ function roadmapReport(m,rep){
   <div class="tip" style="margin-top:14px;margin-bottom:0">${lk?`<b>${FVS===false?'Your fit score is locked':'Checking your fit score'}</b>${FIT_MSG()}`:`<b>What this number means</b>The fit indicator shows how well this path matches your answers and constraints. It is not a prediction of whether you will get a job or what you will earn.`}<div style="margin-top:6px"><button class="link" data-trust type="button">How NorthStep stays honest</button></div></div>
   <div class="noprint" style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="pr">Save as PDF</button><button class="btn ghost" id="rt">Retake</button></div></div></div></div>
  <div class="grid g2" style="margin-top:18px">
-  ${lk?'':`<div class="card rise"><h3>Why this score</h3><small>Each factor (0–100%) × its weight</small><div style="margin-top:8px">${factorRows(r.f)}</div></div>`}
+  ${lk?'':`<div class="card rise"><h3>Why this score</h3><small>Each factor (0–100%) × its weight</small><div style="margin-top:8px">${factorRows(r.f)}</div><small style="display:block;margin-top:14px">Field context, shown for reference. It is not part of your score.</small><div>${factorRows(r.ctx)}</div></div>`}
   <div class="card rise"><h3>Lines of work</h3><small>Typical roles</small>
    <div class="res" style="margin-top:12px">${D.roles.map(x=>`<span class="tag">${x}</span>`).join('')}</div>
    <p style="margin-top:16px" class="muted">${D.day}</p>
@@ -921,10 +922,10 @@ function nicheReport(m,rep){
  const QB=buildB({domain:top.k,from:'niche',nicheFit:top.fit}),qn=visQ(QB).length+1,qnote=QB.prof?`Your niche sets the field and interests, and your saved details are reused. Just ${qn} quick questions about this path.`:'Your niche sets the field and interests. Answer a short set of questions about you once; we save them so next time it is only a few.';
  m.innerHTML=`<div class="wrap">
  <div class="noprint rise" style="margin-bottom:18px"><button class="link" id="bk">← All reports</button></div>
- <div class="card rise"><div class="hero">${gaugeHTML(n.conf,170,`Result clarity: ${n.conf} percent`)}<div class="grow"><span class="tag">${lvl(n.conf,'niche')} · result clarity · indicative range ${lo}–${hi}%</span>
+ <div class="card rise"><div class="hero">${gaugeHTML(n.conf,170,`Result clarity: ${n.conf} percent`)}<div class="grow"><span class="tag">${lvl(n.conf,'niche')} · result clarity · indicative range ${lo}–${hi}%</span> <span class="tag n" style="margin-left:4px">Early version, still being tuned</span>
   <h1>You fit best in ${D.name}.</h1>
   <p class="muted">Your instincts pointed there in ${top.hit} of ${n.total} scenarios, ahead of ${DOMAINS[sec.k].name} (${Math.round(n.gap*100)}-point lead in share of your answers).</p>
-  <p class="muted" style="margin-top:8px">Result clarity shows how clearly one field stands out in your answers. It does not measure how well you would do there.</p>
+  <p class="muted" style="margin-top:8px">Result clarity shows how clearly one field stands out in your answers. It does not measure how well you would do there. This is an early version: it can mix up closely related software fields, so treat it as a starting point and confirm with the roadmap.</p>
   <div class="noprint" style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="mk">Generate my ${D.name} roadmap</button><button class="btn ghost" id="again">Retake</button></div><p class="muted noprint" style="margin-top:10px;font-size:0.8125rem">${qnote}</p></div></div></div>
  <div class="grid g2" style="margin-top:18px">
   <div class="card rise"><h3>Fit across all fields</h3><small>Your score ÷ the maximum possible for that field</small><div style="margin-top:10px">
@@ -1263,7 +1264,7 @@ VIEWS.reports=m=>{
  $$('#rf button').forEach(b=>b.onclick=()=>{RF=b.dataset.f;VIEWS.reports(m);reveal(m)});
 };
 function CALC_HTML(rep){const a=rep.a||{},r=compute(a);if(r.score==null)return '';
- return `<details class="card rise calc" style="margin-top:18px"><summary><span><b>How we calculated it</b><small>Transparent by design</small></span>${svg('chev','chev')}</summary><div class="cin"><div class="math">Score = 100 × Σ (weight × factor)<br>= 100 × (${r.f.map(x=>`${x.w}×${x.v.toFixed(2)}`).join(' + ')})<br>= ${r.raw.toFixed(1)} → <b>${r.score}%</b> (shown on a 0–100 scale, no floor or cap)<br>Indicative range = score ± ${r.margin}. This width is a heuristic based on how many questions you answered, not a statistical interval. It will be replaced once calibration data exists.<br>Timeline = field months × pace(${(r.need/(a.hours||8)).toFixed(2)}) × (1 − 0.35 × momentum ${r.P.toFixed(2)})${a.pivot?` × (1 − pivot credit ${a.pivot.sv.toFixed(2)})`:''} = ${r.weeks} wks</div><p class="disc">Illustrative data: benchmarks and demand figures are placeholders, not real statistics.</p></div></details>`}
+ return `<details class="card rise calc" style="margin-top:18px"><summary><span><b>How we calculated it</b><small>Transparent by design</small></span>${svg('chev','chev')}</summary><div class="cin"><div class="math">Score = 100 × Σ (weight × factor)<br>= 100 × (${r.f.map(x=>`${x.w}×${x.v.toFixed(2)}`).join(' + ')})<br>= ${r.raw.toFixed(1)} → <b>${r.score}%</b> (shown on a 0–100 scale, no floor or cap)<br>Indicative range = score ± ${r.margin}. This width is a heuristic based on how many questions you answered, not a statistical interval. It will be replaced once calibration data exists.<br>Hours needed = ${r.need.toFixed(1)} h a week (never less than 7.5). Your field context (benchmark and demand) is shown next to the score but does not change it.<br>Timeline = field months × pace(${(r.need0/(a.hours||8)).toFixed(2)}) × (1 − 0.35 × momentum ${r.P.toFixed(2)})${a.pivot?` × (1 − pivot credit ${a.pivot.sv.toFixed(2)})`:''} = ${r.weeks} wks</div><p class="disc">Illustrative data: benchmarks and demand figures are placeholders, not real statistics.</p></div></details>`}
 const _rv=VIEWS.report;
 VIEWS.report=(m,id)=>{_rv(m,id);const rep=reports().find(r=>r.id===id),w=$('.wrap',m);$$('[data-trust]',m).forEach(b=>b.onclick=()=>go('trust'));if(!w)return;if(!rep){w.insertAdjacentHTML('afterbegin','<div class="tip" role="status"><b>We couldn’t find that report</b>It may have been deleted, or it was saved on another device.</div>');return}const a=rep.a||{},dq=[...(a.dq1||[]),a.dq2].filter(Boolean);
  w.insertAdjacentHTML('beforeend',`<div class="card rise noprint" style="margin-top:18px"><h3>Take this with you</h3><div class="tw"><button class="btn" id="rp">${svg('print')} Print or save as PDF</button> <button class="btn ghost" id="rc">${svg('copy')} Copy summary</button> <button class="btn ghost" disabled>Share link · coming soon</button></div></div>${dq.length?`<div class="card rise" style="margin-top:18px"><h3>Your field-specific answers</h3><p style="margin-top:8px">${dq.map(x=>`<span class="sk c">${esc(x)}</span>`).join('')}</p></div>`:''}${rep.type==='roadmap'?CALC_HTML(rep):''}`);
